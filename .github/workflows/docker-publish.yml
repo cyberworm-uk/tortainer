@@ -1,12 +1,9 @@
 name: Docker
 
 on:
-  schedule:
-    - cron: '30 24 * * *'
-  on:
-    push:
-      branches:
-        - 'release'
+  push:
+    branches:
+      - 'release'
 
 jobs:
   ghcr_publish:
@@ -52,18 +49,18 @@ jobs:
           push: true
           tags: ${{ github.actor }}/obfs4:latest
 
-     - name: Build and push obfs4-proxy
-       uses: docker/build-push-action@v2
-       with:
-         context: obfs4-proxy/
-         platforms: linux/amd64,linux/arm64,linux/arm/v7
-         push: true
-         tags: ${{ github.actor }}/obfs4-proxy:latest
+      - name: Build and push obfs4-proxy
+        uses: docker/build-push-action@v2
+        with:
+          context: obfs4-proxy/
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ github.actor }}/obfs4-proxy:latest
 
-     - name: Build and push base
-       uses: docker/build-push-action@v2
-       with:
-         context: obfs4-bridge/
-         platforms: linux/amd64,linux/arm64,linux/arm/v7
-         push: true
-         tags: ${{ github.actor }}/obfs4-bridge:latest
+      - name: Build and push base
+        uses: docker/build-push-action@v2
+        with:
+          context: obfs4-bridge/
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ github.actor }}/obfs4-bridge:latest
