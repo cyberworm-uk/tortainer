@@ -9,7 +9,7 @@ WORKDIR /go/src
 RUN go mod download
 WORKDIR /go/src/obfs4proxy
 ENV CGO_ENABLED=0
-RUN go build -ldflags '-extflags "-static" -w -s' .
+RUN go build -ldflags '-extldflags "-static" -w -s' .
 
 FROM scratch
 COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
