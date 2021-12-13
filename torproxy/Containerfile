@@ -1,0 +1,3 @@
+FROM ghcr.io/guest42069/torbase:latest
+EXPOSE 9050
+ENTRYPOINT [ "/usr/bin/tor", "--socksport", "0.0.0.0:9050" ]

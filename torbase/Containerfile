@@ -1,0 +1,5 @@
+FROM docker.io/library/alpine:latest
+RUN apk -U upgrade --no-cache
+RUN apk add tor --no-cache
+COPY torrc /etc/tor/torrc
+VOLUME ["/var/lib/tor"]

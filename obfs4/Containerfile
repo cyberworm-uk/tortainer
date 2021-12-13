@@ -1,0 +1,15 @@
+FROM docker.io/alpine/git:latest AS source
+WORKDIR /go/src
+ARG VERSION=main
+RUN git clone --depth=1 --branch=${VERSION} https://git.torproject.org/pluggable-transports/obfs4.git .
+
+FROM docker.io/library/golang:1.17-alpine AS build
+COPY --from=source /go/src /go/src
+WORKDIR /go/src
+RUN go mod download
+WORKDIR /go/src/obfs4proxy
+ENV CGO_ENABLED=0
+RUN go build -ldflags '-extflags "-static" -w -s' .
+
+FROM scratch
+COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
