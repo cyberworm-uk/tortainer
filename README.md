@@ -1,2 +1,38 @@
 # tortainer
-(WIP) tor containers with a shared base.
+(WIP) general purpose tor container images with a shared base.
+
+## torbase
+Base tor image, just alpine with tor.
+```bash
+ORPORT=$[ (${RANDOM} % (65536-1024)) + 1024 ]
+podman volume create tor-datadir
+podman run -v tor-datadir:/var/lib/tor -p ${ORPORT}:${ORPORT} ghcr.io/guest42069/torbase:latest --orport ${ORPORT} --nickname myrelay --contactinfo myemail@mydomain.com
+```
+
+## torproxy
+Basic tor (client) proxy. **N.B.** binds to 0.0.0.0 inside the container, to allow for use in inter-container networking or exposure by publishing, do *not* use with host networking.
+```bash
+podman volume create tor-datadir
+podman run -v tor-datadir:/var/lib/tor -p 127.0.0.1:9050:9050 ghcr.io/guest42069/torproxy:latest
+```
+
+## obfs4
+Just a static built obfs4 binary, located inside a scratch image at `/obfs4proxy`. Used for later images, not much use on it's own.
+```bash
+podman run ghcr.io/guest42069/obfs4:latest /obfs4proxy
+```
+
+## obfs4-proxy
+Basic tor (client) proxy configured to use an obfs4 bridge. See notes for `torproxy` above.
+```bash
+podman volume create tor-datadir
+podman run -p 127.0.0.1:9050:9050 -v tor-datadir:/var/lib/tor ghcr.io/guest42069/obfs4-proxy:latest --bridge "obfs4 10.20.30.40:12345 3D7D7A39CCA78C7B0448AFA147EF4CC391564D03 cert=YvJSxrXcnXYZ+C9hsIr18bwsm5u5dtZG9DrLTo8CqY8mZlBjhXcUssJJ185mX+JCc/LSnQ iat-mode=0"
+```
+
+## obfs4-bridge
+Basic tor bridge (server), obfs4 listening on port 443.
+```bash
+ORPORT=$[ (${RANDOM} % (65536-1024)) + 1024 ]
+podman volume create tor-datadir
+podman run -p 443:443 -p ${ORPORT}:${ORPORT} -v tor-datadir:/var/lib/tor ghcr.io/guest42069/obfs4-bridge:latest --contactinfo myemail@mydomain.com --orport ${ORPORT} --nickname myrelay
+```
