@@ -1,6 +1,10 @@
 # tortainer
 (WIP) general purpose tor container images with a shared base.
 
+In the below examples, `podman` should be interchangable with `docker` without any other changes to the commands.
+
+All images should be available for the following platforms: `linux/amd64` (x86_64), `linux/arm/v7` (ARM 32bit), `linux/arm64` (aarch64).
+
 ## torbase
 Base tor image, just alpine with tor.
 ```bash
@@ -35,4 +39,23 @@ Basic tor bridge (server), obfs4 listening on port 443.
 ORPORT=$[ (${RANDOM} % (65536-1024)) + 1024 ]
 podman volume create tor-datadir
 podman run -p 443:443 -p ${ORPORT}:${ORPORT} -v tor-datadir:/var/lib/tor ghcr.io/guest42069/obfs4-bridge:latest --contactinfo myemail@mydomain.com --orport ${ORPORT} --nickname myrelay
+```
+## snowflake
+Just a static build snowflake client binary, localted inside a scratch image at `/client`. Used for later images, not much use on it's own.
+
+```bash
+podman run ghcr.io/guest42069/snowflake:latest /client
+```
+
+## snowflake-proxy
+Basic tor (client) proxy configured to use a snowflake bridge. See notes for `torproxy` above.
+```bash
+podman volume create tor-datadir
+podman run -p 127.0.0.1:9050:9050 -v tor-datadir:/var/lib/tor ghcr.io/guest42069/snowflake-proxy:latest
+```
+
+## snowflake-standalone
+A standalone snowflake proxy, this acts as an entrypoint for other users who intend to use a snowflake client to access Tor.
+```bash
+podman run --network host ghcr.io/guest42069/snowflake-standalone:latest
 ```
