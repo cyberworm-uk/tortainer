@@ -1,0 +1,21 @@
+FROM docker.io/alpine/git:latest AS source
+ARG VERSION=main
+WORKDIR /go/src
+RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git .
+
+FROM docker.io/library/golang:1.17-alpine AS builder
+COPY --from=source /go/src /go/src
+WORKDIR /go/src/proxy
+RUN go mod download
+RUN CGO_ENABLED=0 go build -o proxy -ldflags '-extldflags "-static" -w -s'  .
+
+FROM docker.io/library/alpine:latest AS files
+RUN apk -U upgrade --no-cache
+RUN apk add ca-certificates tzdata --no-cache
+
+FROM scratch
+COPY --from=builder /go/src/proxy/proxy /bin/proxy
+COPY --from=files /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=files /usr/share/zoneinfo /usr/share/zoneinfo
+USER 1000
+ENTRYPOINT [ "/bin/proxy" ]
