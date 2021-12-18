@@ -1,0 +1,13 @@
+FROM docker.io/library/rust:alpine AS build
+RUN apk add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
+ENV RUSTFLAGS="-C target-feature=-crt-static"
+RUN cargo install arti
+
+FROM docker.io/library/alpine:latest
+COPY --from=build /usr/local/cargo/bin/arti /bin/arti
+RUN apk -U upgrade --no-cache
+RUN apk add xz-libs sqlite-libs openssl libgcc --no-cache
+RUN addgroup -S arti && adduser -S arti -G arti
+USER arti:arti
+VOLUME [ "/home/arti/.local/share/arti" ]
+ENTRYPOINT [ "/bin/arti", "proxy", "-l", "info", "-p", "9050" ]

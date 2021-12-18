@@ -90,3 +90,11 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
+
+      - name: Build and push snowflake-standalone
+        uses: docker/build-push-action@v2
+        with:
+          context: arti/
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/arti:latest
