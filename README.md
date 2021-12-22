@@ -59,3 +59,18 @@ A standalone snowflake proxy, this acts as an entrypoint for other users who int
 ```bash
 podman run --network host ghcr.io/guest42069/snowflake-standalone:latest
 ```
+
+## arti
+An in-development rust implementation of Tor, as a client. However it only binds to localhost so it's only suitable for use within pods or with host networking.
+```bash
+# host networking
+podman run --detach --network host ghcr.io/guest42069/arti:latest
+(curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
+# pods (where the containers will share localhost)
+podman pod create --name arti
+podman run --detach --pod arti --rm ghcr.io/guest42069/arti:latest
+podman run --pod arti --rm -it docker.io/library/alpine sh
+# the alpine container we are now in can now access arti's socksport on 127.0.0.1:9050
+apk add curl
+(curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
+```
