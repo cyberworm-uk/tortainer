@@ -5,9 +5,8 @@ RUN git clone --depth=1 --branch=${VERSION} https://git.torproject.org/pluggable
 
 FROM docker.io/library/golang:1.17-alpine AS build
 COPY --from=source /go/src /go/src
-WORKDIR /go/src
-RUN go mod download
 WORKDIR /go/src/obfs4proxy
+RUN go mod download
 RUN CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -buildmode=pie -trimpath .
 
 FROM scratch
