@@ -10,7 +10,7 @@ jobs:
       - name: Delete untagged images
         uses: actions/github-script@v3
         with:
-          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const packages = [ "torbase", "torproxy", "obfs4", "snowflake", "obfs4-bridge", "obfs4-proxy", "snowflake-proxy", "snowflake-standalone", "arti" ]
             for (const package of packages) {
