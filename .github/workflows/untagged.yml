@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  delete_untagged:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,16 +14,15 @@ jobs:
           script: |
             const packages = [ "torbase", "torproxy", "obfs4", "snowflake", "obfs4-bridge", "obfs4-proxy", "snowflake-proxy", "snowflake-standalone", "arti" ]
             for (const package of packages) {
-              const response = await github.request("GET /user/packages/container/" + package + "/versions",
-                { per_page: ${{ env.PER_PAGE }}
-              });
+              const response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: ${{ env.PER_PAGE }} });
+              console.log(response.data)
               for(version of response.data) {
-                  if (version.metadata.container.tags.length == 0) {
-                      console.log("delete " + version.id)
-
-                      const deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
-                      console.log("status " + deleteResponse.status)
-                  }
+                if (version.metadata.container.tags.length == 0) {
+                  console.log(version)
+                  console.log("delete " + version.id)
+                  const deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
+                  console.log("status " + deleteResponse.status)
+                }
               }
             }
         env:
