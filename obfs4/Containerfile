@@ -8,8 +8,7 @@ COPY --from=source /go/src /go/src
 WORKDIR /go/src
 RUN go mod download
 WORKDIR /go/src/obfs4proxy
-ENV CGO_ENABLED=0
-RUN go build -ldflags '-w -s -buildid=' -buildmode=pie -trimpath .
+RUN CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -buildmode=pie -trimpath .
 
 FROM scratch
 COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
