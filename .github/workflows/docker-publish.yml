@@ -3,6 +3,9 @@ name: Docker
 on:
   schedule:
     - cron: '20 04 * * *'
+  push:
+    branches:
+      - 'main'
 
 env:
   REGISTRY: ghcr.io
