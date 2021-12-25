@@ -2,10 +2,7 @@ name: Docker
 
 on:
   schedule:
-    - cron: '20 04 * * *'
-  push:
-    branches:
-      - 'main'
+    - cron: '20 16 * * 5'
 
 env:
   REGISTRY: ghcr.io
@@ -101,75 +98,3 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/arti:latest
-      - name: Prune untagged base
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: torbase
-          dry-run: false
-          untagged: true
-      - name: Prune untagged proxy
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: torproxy
-          dry-run: false
-          untagged: true
-      - name: Prune untagged obfs4-bin
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: obfs4
-          dry-run: false
-          untagged: true
-      - name: Prune untagged obfs4-proxy
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: obfs4-proxy
-          dry-run: false
-          untagged: true
-      - name: Prune untagged obfs4-bridge
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: obfs4-bridge
-          dry-run: false
-          untagged: true
-      - name: Prune untagged snowflake-bin
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: snowflake
-          dry-run: false
-          untagged: true
-      - name: Prune untagged snowflake-proxy
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: snowflake-proxy
-          dry-run: false
-          untagged: true
-      - name: Prune untagged snowflake-standalone
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: snowflake-standalone
-          dry-run: false
-          untagged: true
-      - name: Prune untagged arti
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          organization: ${{ env.GITHUB_REPOSITORY_OWNER }}
-          container: arti
-          dry-run: false
-          untagged: true
