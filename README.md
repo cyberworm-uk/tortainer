@@ -10,20 +10,33 @@ Base tor image, just alpine with tor.
 ```bash
 ORPORT=$[ (${RANDOM} % (65536-1024)) + 1024 ]
 podman volume create tor-datadir
-podman run -v tor-datadir:/var/lib/tor -p ${ORPORT}:${ORPORT} ghcr.io/guest42069/torbase:latest --orport ${ORPORT} --nickname myrelay --contactinfo myemail@mydomain.com
+podman run \
+  -v tor-datadir:/var/lib/tor \
+  -p ${ORPORT}:${ORPORT} \
+  ghcr.io/guest42069/torbase:latest \
+  --orport ${ORPORT} \
+  --nickname myrelay \
+  --contactinfo myemail@mydomain.com
 ```
 
 ## torproxy
 Basic tor (client) proxy. **N.B.** binds to 0.0.0.0 inside the container, to allow for use in inter-container networking or exposure by publishing, do *not* use with host networking.
 ```bash
 podman volume create tor-datadir
-podman run -v tor-datadir:/var/lib/tor -p 127.0.0.1:9050:9050 ghcr.io/guest42069/torproxy:latest
+podman run \
+  -v tor-datadir:/var/lib/tor \
+  -p 127.0.0.1:9050:9050 \
+  ghcr.io/guest42069/torproxy:latest
 ```
 
 ## obfs4
-Just a static built obfs4 binary, located inside a scratch image at `/obfs4proxy`. Used for later images, not much use on it's own.
-```bash
-podman run ghcr.io/guest42069/obfs4:latest /obfs4proxy
+Just an obfs4 binary, located inside a scratch image at `/obfs4proxy`. Used for later images, not much use on it's own.
+
+```Dockerfile
+FROM ghcr.io/guest42069/obfs4:latest AS bin
+FROM docker.io/library/alpine:latest
+COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
+...
 ```
 
 ## obfs4-proxy
@@ -38,20 +51,33 @@ Basic tor bridge (server), obfs4 listening on port 443.
 ```bash
 ORPORT=$[ (${RANDOM} % (65536-1024)) + 1024 ]
 podman volume create tor-datadir
-podman run -p 443:443 -p ${ORPORT}:${ORPORT} -v tor-datadir:/var/lib/tor ghcr.io/guest42069/obfs4-bridge:latest --contactinfo myemail@mydomain.com --orport ${ORPORT} --nickname myrelay
+podman run \
+  -p 443:443 \
+  -p ${ORPORT}:${ORPORT} \
+  -v tor-datadir:/var/lib/tor \
+  ghcr.io/guest42069/obfs4-bridge:latest \
+  --contactinfo myemail@mydomain.com \
+  --orport ${ORPORT} \
+  --nickname myrelay
 ```
 ## snowflake
-Just a static build snowflake client binary, localted inside a scratch image at `/client`. Used for later images, not much use on it's own.
+Just a snowflake client binary, located inside a scratch image at `/client`. Used for later images, not much use on it's own.
 
-```bash
-podman run ghcr.io/guest42069/snowflake:latest /client
+```Dockerfile
+FROM ghcr.io/guest42069/snowflake:latest AS bin
+FROM docker.io/library/alpine:latest
+COPY --from=bin /client /usr/bin/client
+...
 ```
 
 ## snowflake-proxy
 Basic tor (client) proxy configured to use a snowflake bridge. See notes for `torproxy` above.
 ```bash
 podman volume create tor-datadir
-podman run -p 127.0.0.1:9050:9050 -v tor-datadir:/var/lib/tor ghcr.io/guest42069/snowflake-proxy:latest
+podman run \
+  -p 127.0.0.1:9050:9050 \
+  -v tor-datadir:/var/lib/tor \
+  ghcr.io/guest42069/snowflake-proxy:latest
 ```
 
 ## snowflake-standalone
