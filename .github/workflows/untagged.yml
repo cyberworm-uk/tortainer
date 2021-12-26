@@ -1,19 +1,21 @@
 on:
+  push:
   workflow_dispatch:
 
 jobs:
-  delete_untagged:
+  untagged:
     runs-on: ubuntu-latest
+
     steps:
       - name: Delete untagged images
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const packages = [ "torbase", "torproxy", "obfs4", "snowflake", "obfs4-bridge", "obfs4-proxy", "snowflake-proxy", "snowflake-standalone", "arti" ]
-            for (const package of packages) {
-              const response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: ${{ env.PER_PAGE }} });
-              for(version of response.data) {
+            packages = [ "torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti" ]
+            for (package of packages) {
+              response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: 100 });
+              for (version of response.data) {
                 console.log("response" + version)
                 if (version.metadata.container.tags.length == 0) {
                   console.log("delete " + version.id)
