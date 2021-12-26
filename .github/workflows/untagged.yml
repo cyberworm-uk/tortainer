@@ -10,14 +10,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            packages = [ "torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti" ]
+            packages = ["torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti"]
             for (package of packages) {
-              response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: 100 });
+              response = await github.request("GET /user/packages/container/" + package + "/versions", { });
               for (version of response.data) {
                 if (version.metadata.container.tags.length == 0) {
-                  console.log("delete " + version.id)
-                  deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
-                  console.log("status " + deleteResponse.status)
+                  const deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
                 }
               }
             }
