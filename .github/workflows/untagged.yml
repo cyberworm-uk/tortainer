@@ -12,10 +12,11 @@ jobs:
           script: |
             packages = ["torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti"]
             for (package of packages) {
-              response = await github.request("GET /user/packages/container/" + package + "/versions", { });
+              response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: 100 });
               for (version of response.data) {
                 if (version.metadata.container.tags.length == 0) {
-                  const deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
+                  console.log("delete:"+package+":"+version.id)
+                  deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
                 }
               }
             }
