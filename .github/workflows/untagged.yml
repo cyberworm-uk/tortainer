@@ -4,7 +4,6 @@ on:
 jobs:
   delete_untagged:
     runs-on: ubuntu-latest
-
     steps:
       - name: Delete untagged images
         uses: actions/github-script@v3
@@ -15,7 +14,7 @@ jobs:
             for (const package of packages) {
               const response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: ${{ env.PER_PAGE }} });
               for(version of response.data) {
-                console.log(version)
+                console.log("response" + version)
                 if (version.metadata.container.tags.length == 0) {
                   console.log("delete " + version.id)
                   const deleteResponse = await github.request("DELETE /user/packages/container/" + package + "/versions/" + version.id, { });
@@ -23,5 +22,3 @@ jobs:
                 }
               }
             }
-        env:
-          PER_PAGE: 100
