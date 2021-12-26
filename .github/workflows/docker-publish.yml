@@ -41,7 +41,7 @@ jobs:
           context: torproxy/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
 
       - name: Build and push obsf4-bin
         uses: docker/build-push-action@v2
