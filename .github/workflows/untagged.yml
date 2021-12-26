@@ -4,11 +4,9 @@ on:
 jobs:
   untagged:
     runs-on: ubuntu-latest
-    permissions:
-      packages: admin
     steps:
       - name: Delete untagged images
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
