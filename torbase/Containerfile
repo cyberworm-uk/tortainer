@@ -1,5 +1,6 @@
 FROM docker.io/library/alpine:latest
-RUN apk -U add tor --no-cache
+RUN apk -U upgrade --no-cache
+RUN apk add tor --no-cache
 COPY torrc /etc/tor/torrc-defaults
 RUN chown tor /var/lib/tor
 VOLUME [ "/var/lib/tor" ]
