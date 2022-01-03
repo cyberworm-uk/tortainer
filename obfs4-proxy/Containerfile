@@ -2,4 +2,5 @@ FROM ghcr.io/guest42069/obfs4:latest AS bin
 
 FROM ghcr.io/guest42069/torbase:latest
 COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
+EXPOSE 9050
 ENTRYPOINT [ "/usr/bin/tor", "--clienttransportplugin", "obfs4 exec /usr/bin/obfs4proxy", "--socksport", "0.0.0.0:9050", "--usebridges", "1" ]
