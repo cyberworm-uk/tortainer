@@ -1,8 +1,8 @@
 name: Untagged
-
 on:
   workflow_dispatch:
-
+  schedule:
+    - cron: '10 16 * * 5'
 jobs:
   untagged:
     runs-on: ubuntu-latest
