@@ -12,7 +12,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            packages = ["torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti","dohproxy","i6r9c"]
+            packages = ["torbase","torproxy","obfs4","snowflake","obfs4-bridge","obfs4-proxy","snowflake-proxy","snowflake-standalone","arti","dohproxy","i6r9c","tailscale"]
             for (package of packages) {
               response = await github.request("GET /user/packages/container/" + package + "/versions", { per_page: 100 });
               for (version of response.data) {
