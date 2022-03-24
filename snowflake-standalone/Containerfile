@@ -3,11 +3,11 @@ ARG VERSION=main
 WORKDIR /go/src
 RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git .
 
-FROM docker.io/library/golang:1.17-alpine AS builder
+FROM docker.io/library/golang:1.18-alpine AS builder
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/proxy
 RUN go mod download
-RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -trimpath .;fi
+RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath .;fi
 
 FROM docker.io/library/alpine:latest
 RUN apk -U upgrade --no-cache
