@@ -3,11 +3,11 @@ WORKDIR /go/src
 ARG VERSION=main
 RUN git clone --depth=1 --branch=${VERSION} https://git.torproject.org/pluggable-transports/obfs4.git .
 
-FROM docker.io/library/golang:1.17-alpine AS build
+FROM docker.io/library/golang:1.18-alpine AS build
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/obfs4proxy
 RUN go mod download
-RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else CGO_ENABLED=0 go build -ldflags '-w -s -buildid=' -trimpath .;fi
+RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath .;fi
 
 FROM scratch
 COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
