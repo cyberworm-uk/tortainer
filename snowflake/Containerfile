@@ -3,7 +3,7 @@ ARG VERSION=main
 WORKDIR /go/src
 RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git .
 
-FROM docker.io/library/golang:1.18-alpine AS build
+FROM docker.io/library/golang:1.19-alpine AS build
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/client
 RUN go mod download
