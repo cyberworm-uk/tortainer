@@ -165,3 +165,69 @@ systemctl enable --now container-snowflake.service
 # the container will now log to journald like other services, keeps service logs in with other systemd services.
 journalctl -u container-snowflake.service
 ```
+
+## hidden / onion service website
+This example is `podman` specific (as we'll be taking advantage of pods, which aren't directly interchangable with `docker`).
+In this example creates a static hello world page using nginx.
+This could be further hardened and a more sophisticated example may be added later. This example only intends to outline the general process and isn't intended to be production ready.
+```bash
+# create persistent storage for onion webservice config
+podman volume create onion-nginx-conf
+podman volume create onion-var-www-html
+# create persistent storage for onion tor data
+podman volume create onion-tor-datadir
+# create a pod to run our services in
+podman pod create --name onion
+# create the tor container within to handle running the onion service
+podman run \
+  -d \
+  --rm \
+  --pod onion \
+  --label "io.containers.autoupdate=registry" \
+  --name onion-tor \
+  -v onion-tor-datadir:/var/lib/tor \
+  ghcr.io/guest42069/torbase:latest \
+  --socksport 0 \
+  --hiddenservicedir /var/lib/tor/website \
+  --hiddenserviceport "80 127.0.0.1:80"
+# create a basic nginx config
+echo 'server {
+  listen 80;
+  access_log off;
+  root /var/www/html;
+  index index.html;
+  server_name _;
+  server_tokens off;
+}' > $(podman volume inspect -f '{{ .Mountpoint }}' onion-nginx-conf)/website.conf
+# create a basic html page
+echo '<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello World</h1>
+</body>
+</html>' > $(podman volume inspect -f '{{ .Mountpoint }}' onion-var-www-html)/index.html
+# create the nginx container within the pod to handle the incoming http requests
+podman run \
+  -d \
+  --rm \
+  --pod onion \
+  --label io.containers.autoupdate=registry \
+  --name onion-nginx \
+  -v onion-nginx-conf:/etc/nginx/conf.d \
+  -v onion-var-www-html:/var/www/html \
+  docker.io/library/nginx:alpine
+# obtain our onion hostname
+cat $(podman volume inspect -f '{{ .Mountpoint }}' onion-tor-datadir)/website/hostname
+# visit the site with Tor Browser and check that you've got your hello world message.
+# podman log onion-tor to check tor logs
+# podman log onion-nginx to check nginx logs
+# if all looks well, generate a systemd service for the onion pod.
+(cd /etc/systemd/system; podman generate systemd --new --name ---files)
+# enable the systemd service for the pod.
+systemctl enable --now pod-onion.service
+# there will also be services for the two containers, these are set as required by the onion pod service and will start with it automatically.
+# journalctl -u container-onion-tor.service to check tor logs
+# journalctl -u container-onion-nginx.service to check nginx logs
+```
