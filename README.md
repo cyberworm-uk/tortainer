@@ -1,5 +1,5 @@
 # tortainer
-(WIP) general purpose tor container images with a shared base.
+General purpose tor container images with a shared base.
 
 In the below examples, `podman` should be interchangable with `docker` without any other changes to the commands, with the exception of `podman generate ...` to create systemd services.
 
