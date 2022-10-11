@@ -213,7 +213,7 @@ podman run \
   -d \
   --rm \
   --pod onion \
-  --label io.containers.autoupdate=registry \
+  --label "io.containers.autoupdate=registry" \
   --name onion-nginx \
   -v onion-nginx-conf:/etc/nginx/conf.d \
   -v onion-var-www-html:/var/www/html \
@@ -224,7 +224,7 @@ cat $(podman volume inspect -f '{{ .Mountpoint }}' onion-tor-datadir)/website/ho
 # podman log onion-tor to check tor logs
 # podman log onion-nginx to check nginx logs
 # if all looks well, generate a systemd service for the onion pod.
-(cd /etc/systemd/system; podman generate systemd --new --name ---files)
+(cd /etc/systemd/system; podman generate systemd --new --name --files onion)
 # enable the systemd service for the pod.
 systemctl enable --now pod-onion.service
 # there will also be services for the two containers, these are set as required by the onion pod service and will start with it automatically.
