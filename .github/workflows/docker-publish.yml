@@ -13,23 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Log-in to registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push base
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: torbase/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -37,7 +37,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/torbase:latest
 
       - name: Build and push proxy
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: torproxy/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -45,7 +45,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
 
       - name: Build and push obsf4-bin
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: obfs4/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -53,7 +53,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4:latest
 
       - name: Build and push obfs4-proxy
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: obfs4-proxy/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -61,7 +61,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest
 
       - name: Build and push obfs4-bridge
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: obfs4-bridge/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -69,7 +69,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
 
       - name: Build and push snowflake-bin
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: snowflake/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -77,7 +77,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
 
       - name: Build and push snowflake-proxy
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: snowflake-proxy/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -85,7 +85,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
 
       - name: Build and push snowflake-standalone
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: snowflake-standalone/
           platforms: linux/amd64,linux/arm64,linux/arm/v7
@@ -94,7 +94,7 @@ jobs:
 
 # currently this takes hours to build...
 #      - name: Build and push arti
-#        uses: docker/build-push-action@v2
+#        uses: docker/build-push-action@v3
 #        with:
 #          context: arti/
 #          platforms: linux/amd64,linux/arm64,linux/arm/v7
