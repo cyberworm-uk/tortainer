@@ -1,7 +1,7 @@
-FROM docker.io/library/alpine:latest AS build
-RUN apk -U upgrade --no-cache
-RUN apk add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev cargo --no-cache
+FROM docker.io/library/rust:alpine AS build
 ENV RUSTFLAGS="-C target-feature=-crt-static"
+RUN apk -U upgrade --no-cache
+RUN apk add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev --no-cache
 RUN cargo install arti
 
 FROM docker.io/library/alpine:latest
