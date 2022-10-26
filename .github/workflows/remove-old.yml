@@ -1,10 +1,10 @@
-name: Untagged
+name: Remove old
 on:
   workflow_dispatch:
   schedule:
     - cron: '10 16 * * 5'
 jobs:
-  untagged:
+  remove-old:
     runs-on: ubuntu-latest
     steps:
       - name: Delete old tailscale
