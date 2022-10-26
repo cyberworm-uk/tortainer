@@ -8,68 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete old tailscale
-        uses: actions/delete-package-versions@v3
+        uses: smartsquaregmbh/delete-old-packages@v0.5.0
         with:
-          repo: 'tailtainer'
-          package-name: 'tailscale'
           token: ${{ secrets.PAT }}
-          min-versions-to-keep: 12
-      - name: Delete old dohproxy
-        uses: actions/delete-package-versions@v3
-        with:
-          repo: 'dohot-service'
-          package-name: 'dohproxy'
-          token: ${{ secrets.PAT }}
-          min-versions-to-keep: 12
-      - name: Delete old i6r9c
-        uses: actions/delete-package-versions@v3
-        with:
-          repo: 'i6r9c'
-          package-name: 'i6r9c'
-          token: ${{ secrets.PAT }}
-          min-versions-to-keep: 12
-      - name: Delete old torbase
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'torbase'
-          min-versions-to-keep: 12
-      - name: Delete old torproxy
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'torproxy'
-          min-versions-to-keep: 12
-      - name: Delete old obfs4
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'obfs4'
-          min-versions-to-keep: 12
-      - name: Delete old snowflake
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'snowflake'
-          min-versions-to-keep: 12
-      - name: Delete old obfs4-bridge
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'obfs4-bridge'
-          min-versions-to-keep: 12
-      - name: Delete old obfs4-proxy
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'obfs4-proxy'
-          min-versions-to-keep: 12
-      - name: Delete old snowflake-proxy
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'snowflake-proxy'
-          min-versions-to-keep: 12
-      - name: Delete old snowflake-standalone
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'snowflake-standalone'
-          min-versions-to-keep: 12
-      - name: Delete old arti
-        uses: actions/delete-package-versions@v3
-        with:
-          package-name: 'arti'
-          min-versions-to-keep: 12
+          user: ${{ github.actor }}
+          type: container
+          keep: 12
+          names: |
+            torbase
+            torproxy
+            snowflake
+            obfs4
+            obfs4-bridge
+            obfs4-proxy
+            snowflake-proxy
+            snowflake-standalone
+            arti
+            dohproxy
+            i6r9c
+            tailscale
