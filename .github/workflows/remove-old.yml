@@ -1,4 +1,4 @@
-name: Remove old
+name: remove-old
 on:
   workflow_dispatch:
   schedule:
