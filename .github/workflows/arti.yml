@@ -1,8 +1,10 @@
 name: Docker-arti
 
+# currently this is failing to run under the github action workers, seemingly due to memory constraints on building the package.
+
 on:
-  schedule:
-    - cron: '20 16 * * 5'
+#  schedule:
+#    - cron: '20 16 * * 5'
   workflow_dispatch:
 
 env:
