@@ -10,4 +10,5 @@ COPY --from=build /usr/lib/python3.10 /usr/lib/python3.10
 COPY --from=build /usr/bin/onionshare-cli /usr/bin/onionshare-cli
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/home/onionshare/.config/onionshare/" ]
+WORKDIR /home/onionshare/.config/onionshare
 ENTRYPOINT [ "/usr/bin/onionshare-cli" ]
