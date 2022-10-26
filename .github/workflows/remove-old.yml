@@ -39,8 +39,8 @@ jobs:
           package-name: 'torproxy'
           min-versions-to-keep: 12
       - name: Delete old obfs4
+        uses: actions/delete-package-versions@v3
         with:
-          uses: actions/delete-package-versions@v3
           package-name: 'obfs4'
           min-versions-to-keep: 12
       - name: Delete old snowflake
