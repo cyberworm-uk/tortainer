@@ -145,6 +145,40 @@ apk add curl
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 ```
 
+## onionshare
+[`onionshare-cli`](https://onionshare.org/) is a project used to provide web, file sharing and receiving and chat services over Tor onion services.
+
+This is still a bit of a work in progress and may need some tweaking in future and more extensive documentation of use cases.
+
+```bash
+# create storage to container persistent files
+podman create volume onionshare-config
+# launch a chat server (I.E. requires only the .onion address and not an additional private key, )
+podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat
+#... outputs the following
+#Give this address and private key to the recipient:
+#http://yud4dyoi4pk344rjjlm34bgeszflbra2qvxc732kxvssgt2muv6vzryd.onion
+#Private key: 6MZ7PXM7GO3H2QNMOM6VMXGUE7PJ2KJWUJE2TETVGU35YCCDHTEA
+#... ctrl-c
+```
+
+In the above example, the servers private key won't persist (I.E. relaunching it won't give the same address). We can create a persistent config (stored in the volume) with the `--persistent ...` flag, which is a path to a config file.
+
+```bash
+podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat --persistent persistent/test
+#... outputs the following
+#Give this address and private key to the recipient:
+#http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
+#Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
+#... ctrl-c
+podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat --persistent persistent/test
+#... outputs the following
+#Give this address and private key to the recipient:
+#http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
+#Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
+#... ctrl-c
+```
+
 ## systemd service
 Podman (not Docker, sadly) can automatically generate systemd service files that allow you to turn existing containers or pods into systemd managed services.
 In this example, we'll create a systemd service for a `snowflake-standalone` container.
