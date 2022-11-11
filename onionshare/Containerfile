@@ -5,10 +5,10 @@ RUN pip3 install onionshare-cli
 FROM ghcr.io/guest42069/torbase:latest
 RUN apk add python3
 RUN addgroup -S onionshare && adduser -S onionshare -G onionshare
-USER onionshare:onionshare
 COPY --from=build /usr/lib/python3.10 /usr/lib/python3.10
 COPY --from=build /usr/bin/onionshare-cli /usr/bin/onionshare-cli
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/home/onionshare/.config/onionshare/" ]
 WORKDIR /home/onionshare/.config/onionshare
+USER onionshare:onionshare
 ENTRYPOINT [ "/usr/bin/onionshare-cli" ]
