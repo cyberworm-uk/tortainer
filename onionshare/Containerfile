@@ -1,5 +1,5 @@
 FROM docker.io/library/alpine:latest AS build
-RUN apk add python3 python3-dev py3-pip gcc musl-dev linux-headers libffi-dev
+RUN apk add python3 python3-dev py3-pip py3-wheel gcc g++ make musl-dev linux-headers libffi-dev
 RUN pip3 install onionshare-cli
 
 FROM ghcr.io/guest42069/torbase:latest
