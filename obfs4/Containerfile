@@ -1,7 +1,7 @@
 FROM docker.io/alpine/git:latest AS source
 WORKDIR /go/src
-ARG VERSION=main
-RUN git clone --depth=1 --branch=${VERSION} https://git.torproject.org/pluggable-transports/obfs4.git .
+ARG VERSION=master
+RUN git clone --depth=1 --branch=${VERSION} https://gitlab.com/yawning/obfs4.git .
 
 FROM docker.io/library/golang:1.19-alpine AS build
 COPY --from=source /go/src /go/src
