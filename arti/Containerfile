@@ -3,7 +3,7 @@ ENV RUSTFLAGS="-C target-feature=-crt-static"
 ENV CARGO_UNSTABLE_SPARSE_REGISTRY=true
 RUN rustup install nightly && rustup default nightly
 RUN apk add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev --no-cache
-RUN cargo install arti --features with-openssl
+RUN cargo install arti --features tor-llcrypto/with-openssl
 
 FROM docker.io/library/alpine:latest
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
