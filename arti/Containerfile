@@ -11,6 +11,6 @@ RUN apk -U upgrade --no-cache
 RUN apk add xz-libs sqlite-libs openssl libgcc --no-cache
 RUN addgroup -S arti && adduser -d /arti -m -S arti -G arti
 USER arti:arti
-COPY arti.toml /arti/.config/arti.toml
+COPY arti.toml /arti/.config/arti/arti.toml
 VOLUME [ "/arti" ]
 ENTRYPOINT [ "/bin/arti" ]
