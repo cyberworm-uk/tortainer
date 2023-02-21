@@ -1,0 +1,24 @@
+[application]
+socks_listen = 9050
+[logging]
+config = "info"
+[storage]
+cache_dir = "/arti/cache"
+state_dir = "/arti/state"
+#[bridges]
+#enabled = true
+#bridges = [
+#  # These are just examples, and will not work!
+#  "Bridge 192.0.2.66:443 8C00000DFE0046ABCDFAD191144399CB520C29E8",
+#  "Bridge 192.0.2.78:9001 6078000DFE0046ABCDFAD191144399CB52FFFFF8",
+#]
+#[[bridges.transports]]
+#protocols = ["obfs4"]
+#path = "/bin/obfs4proxy"
+#arguments = []
+#run_on_startup = false
+#[[bridges.transports]]
+#protocols = ["snowflake"]
+#path = "/bin/snowflake-client"
+#arguments = []
+#run_on_startup = false
