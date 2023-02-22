@@ -27,3 +27,4 @@ jobs:
             dohproxy
             i6r9c
             tailscale
+            doh-front
