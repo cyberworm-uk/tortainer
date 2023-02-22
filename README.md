@@ -136,13 +136,18 @@ An in-development rust implementation of Tor, as a client. However it only binds
 # host networking
 podman run --detach --network host ghcr.io/guest42069/arti:latest
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
-# pods (where the containers will share localhost)
+# _OR_ pods (where the containers will share localhost)
 podman pod create --name arti
 podman run --detach --pod arti --rm ghcr.io/guest42069/arti:latest
 podman run --pod arti --rm -it docker.io/library/alpine sh
 # the alpine container we are now in can now access arti's socksport on 127.0.0.1:9050
 apk add curl
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
+# To persist state, etc mount a volume to /arti inside the container
+podman volume create arti-state
+podman run --detach --pod arti --volume arti-state:/arti --rm ghcr.io/guest42069/arti:latest
+# To use a custom arti.toml config file
+podman run --detach --pod arti --volume ./arti.toml:/arti/.config/arti/arti.toml:Z --rm ghcr.io/guest42069/arti:latest
 ```
 
 ## onionshare
