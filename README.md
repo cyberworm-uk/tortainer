@@ -146,8 +146,20 @@ apk add curl
 # To persist state, etc mount a volume to /arti inside the container
 podman volume create arti-state
 podman run --detach --pod arti --volume arti-state:/arti --rm ghcr.io/guest42069/arti:latest
-# To use a custom arti.toml config file
-podman run --detach --pod arti --volume ./arti.toml:/arti/.config/arti/arti.toml:Z --rm ghcr.io/guest42069/arti:latest
+# To use a custom arti.toml config file place it in a directory and mount it into the container.
+# For example, to configure a bridge ...
+podman volume create arti-config
+echo '
+[bridges]
+
+enabled = true
+bridges = [
+  # These are just examples, and will not work!
+  "Bridge 192.0.2.66:443 8C00000DFE0046ABCDFAD191144399CB520C29E8",
+  "Bridge 192.0.2.78:9001 6078000DFE0046ABCDFAD191144399CB52FFFFF8",
+]
+' > $(podman volume inspect -f '{{ .Mountpoint }}' arti-config)/bridges.toml
+podman run --detach --pod arti --volume arti-config:/arti/.config/arti/arti.d --rm ghcr.io/guest42069/arti:latest
 ```
 
 ## onionshare
