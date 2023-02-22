@@ -13,4 +13,4 @@ RUN addgroup -S arti && adduser -h /arti -S arti -G arti
 USER arti:arti
 COPY arti.toml /arti/.config/arti/arti.toml
 VOLUME [ "/arti" ]
-ENTRYPOINT [ "/bin/arti" ]
+ENTRYPOINT [ "/bin/arti", "proxy" ]
