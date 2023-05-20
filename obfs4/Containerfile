@@ -1,6 +1,6 @@
 FROM docker.io/alpine/git:latest AS source
 WORKDIR /go/src
-ARG VERSION=master
+ARG VERSION=obfs4proxy-0.0.14
 RUN git clone --depth=1 --branch=${VERSION} https://gitlab.com/yawning/obfs4.git .
 
 FROM docker.io/library/golang:alpine AS build
