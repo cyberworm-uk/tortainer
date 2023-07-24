@@ -310,6 +310,8 @@ state_dir = "/arti/state"
 #
 # These timeouts measure the permitted time between sending a request on an
 # established circuit, and getting a response from the exit node.
+allow_onion_addrs = true
+
 [stream_timeouts]
 
 # How long should we wait before timing out a stream when connecting to a host?
