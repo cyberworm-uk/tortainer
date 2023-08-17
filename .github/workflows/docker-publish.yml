@@ -72,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake/
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
 
@@ -80,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake-proxy/
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
 
@@ -88,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake-standalone/
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
 
@@ -96,15 +96,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: onionshare/
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/onionshare:latest
-
-# currently this takes hours to build...
-#      - name: Build and push arti
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: arti/
-#          platforms: linux/amd64,linux/arm64,linux/arm/v7
-#          push: true
-#          tags: ${{ env.REGISTRY }}/${{ github.actor }}/arti:latest
