@@ -7,7 +7,7 @@ FROM docker.io/library/golang:alpine AS build
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/obfs4proxy
 RUN go mod download
-RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath .;fi
+RUN if [[ "`go env | grep "^GOARCH=" | sed 's:^GOARCH="\(.*\)"$:\1:'`" != "arm" ]]; then CGO_ENABLED=0 go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath -buildmode=pie .;else apk add gcc musl-dev && go build -buildvcs=false -ldflags '-w -s -buildid=' -trimpath .;fi
 
 FROM scratch
 COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
