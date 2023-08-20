@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: obfs4/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4:latest
 
@@ -56,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: obfs4-proxy/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest
 
@@ -64,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: obfs4-bridge/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
 
@@ -72,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
 
@@ -80,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake-proxy/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
 
@@ -88,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: snowflake-standalone/
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
 
