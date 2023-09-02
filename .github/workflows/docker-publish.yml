@@ -91,11 +91,3 @@ jobs:
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
-
-      - name: Build and push onionshare
-        uses: docker/build-push-action@v4
-        with:
-          context: onionshare/
-          platforms: linux/amd64,linux/386,linux/arm64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/onionshare:latest
