@@ -171,7 +171,7 @@ This is still a bit of a work in progress and may need some tweaking in future a
 # create storage to container persistent files
 podman create volume onionshare-config
 # launch a chat server (I.E. requires only the .onion address and not an additional private key, )
-podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat
+podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat
 #... outputs the following
 #Give this address and private key to the recipient:
 #http://yud4dyoi4pk344rjjlm34bgeszflbra2qvxc732kxvssgt2muv6vzryd.onion
@@ -182,18 +182,119 @@ podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io
 In the above example, the servers private key won't persist (I.E. relaunching it won't give the same address). We can create a persistent config (stored in the volume) with the `--persistent ...` flag, which is a path to a config file.
 
 ```bash
-podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat --persistent persistent/test
+podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat --persistent /config/chat
 #... outputs the following
 #Give this address and private key to the recipient:
 #http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
 #Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
 #... ctrl-c
-podman run --rm -v onionshare-config:/home/onionshare/.config/onionshare ghcr.io/guest42069/onionshare --chat --persistent persistent/test
-#... outputs the following
+podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat --persistent /config/chat
+#... outputs the following, with the same address and key
 #Give this address and private key to the recipient:
 #http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
 #Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
 #... ctrl-c
+```
+
+To try and avoid any confusion with shared files/folders, a separate volume mount point of `/share` exists.
+
+```bash
+podman run --rm -v onionshare-config:/config -v /path/to/share:/share:Z ghcr.io/guest42069/onionshare --persist /config/share /share
+#... outputs the following
+#Give this address and private key to the recipient:
+#http://7bc7khljgal64ktjfrhjk5lom3td6pguif6zxherkiznz5wh4kn5zfyd.onion
+#Private key: AFY4KS5YJFSKZGIZBYKVRBJXWV6OW5SY2JY3NGWA2OJFZX45TNRA
+#...
+```
+
+Receiving files submitted by a remote party.
+
+```bash
+podman run --rm -v onionshare-config:/config -v onionshare-incoming:/share ghcr.io/guest42069/onionshare --persist /config/receive --receive
+#... outputs the following
+#Give this address and private key to the sender:
+#http://4veh5esudna6lhafb2qbu7vatgoakkiysee4faqgzg7lfbsgh7y64cyd.onion
+#Private key: BSY5R6QP4USGF7GVENOSEIAE3C6Q4UT6DYFFW5CC7HPUQKCWQRFQ
+#... any submitted files will be available from the onionshare-incoming directory
+ls -ln `docker volume inspect -f '{{ .Mountpoint }}' onionshare-incoming`/OnionShare
+total 0
+drwxr-xr-x 1 101 101 72 Sep  5 12:54 2023-09-05
+#...
+```
+
+Full help screen for other commands.
+
+```bash
+╭───────────────────────────────────────────╮
+│    *            ▄▄█████▄▄            *    │
+│               ▄████▀▀▀████▄     *         │
+│              ▀▀█▀       ▀██▄              │
+│      *      ▄█▄          ▀██▄             │
+│           ▄█████▄         ███        -+-  │
+│             ███         ▀█████▀           │
+│             ▀██▄          ▀█▀             │
+│         *    ▀██▄       ▄█▄▄     *        │
+│ *             ▀████▄▄▄████▀               │
+│                 ▀▀█████▀▀                 │
+│             -+-                     *     │
+│   ▄▀▄               ▄▀▀ █                 │
+│   █ █     ▀         ▀▄  █                 │
+│   █ █ █▀▄ █ ▄▀▄ █▀▄  ▀▄ █▀▄ ▄▀▄ █▄▀ ▄█▄   │
+│   ▀▄▀ █ █ █ ▀▄▀ █ █ ▄▄▀ █ █ ▀▄█ █   ▀▄▄   │
+│                                           │
+│                  v2.6.1                   │
+│                                           │
+│          https://onionshare.org/          │
+╰───────────────────────────────────────────╯
+
+usage: onionshare-cli [-h] [--receive] [--website] [--chat] [--local-only]
+                      [--connect-timeout SECONDS] [--config FILENAME]
+                      [--persistent FILENAME] [--title TITLE] [--public]
+                      [--auto-start-timer SECONDS] [--auto-stop-timer SECONDS]
+                      [--no-autostop-sharing] [--data-dir data_dir]
+                      [--webhook-url webhook_url] [--disable-text]
+                      [--disable-files] [--disable_csp]
+                      [--custom_csp custom_csp] [-v]
+                      [filename ...]
+
+positional arguments:
+  filename                  List of files or folders to share
+
+options:
+  -h, --help                show this help message and exit
+  --receive                 Receive files
+  --website                 Publish website
+  --chat                    Start chat server
+  --local-only              Don't use Tor (only for development)
+  --connect-timeout SECONDS
+                            Give up connecting to Tor after a given amount of
+                            seconds (default: 120)
+  --config FILENAME         Filename of custom global settings
+  --persistent FILENAME     Filename of persistent session
+  --title TITLE             Set a title
+  --public                  Don't use a private key
+  --auto-start-timer SECONDS
+                            Start onion service at scheduled time (N seconds
+                            from now)
+  --auto-stop-timer SECONDS
+                            Stop onion service at schedule time (N seconds
+                            from now)
+  --no-autostop-sharing     Share files: Continue sharing after files have
+                            been sent (default is to stop sharing)
+  --data-dir data_dir       Receive files: Save files received to this
+                            directory
+  --webhook-url webhook_url
+                            Receive files: URL to receive webhook
+                            notifications
+  --disable-text            Receive files: Disable receiving text messages
+  --disable-files           Receive files: Disable receiving files
+  --disable_csp             Publish website: Disable the default Content
+                            Security Policy header (allows your website to use
+                            third-party resources)
+  --custom_csp custom_csp   Publish website: Set a custom Content Security
+                            Policy header
+  -v, --verbose             Log OnionShare errors to stdout, and web errors to
+                            disk
 ```
 
 ## systemd service
