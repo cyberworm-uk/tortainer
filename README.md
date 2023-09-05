@@ -5,6 +5,19 @@ In the below examples, `podman` should be interchangable with `docker` without a
 
 All images should be available for the following platforms: `linux/amd64` (x86_64), `linux/arm/v7` (ARM 32bit), `linux/arm64` (aarch64).
 
+## Container Image Documentation
+
+- [torbase](#torbase) an image which serves as a common base that more complete images are build on.
+- [torproxy](#torproxy) an image for a regular Tor proxy (client) image.
+- [obfs4](#obfs4) an image which contains compiled obfs4-proxy binaries only.
+- [obfs4-proxy](#obfs4-proxy) an image for a Tor proxy (client) connecting over obfs4.
+- [obfs4-bridge](#obfs4-bridge) an image for a Tor bridge (server) allowing clients to connect into the Tor network over obfs4.
+- [snowflake](#snowflake) an image which contains compiled snowflake client binary only.
+- [snowflake-proxy](#snowflake-proxy) an image for a Tor proxy (client) connecting over snowflake.
+- [snowflake-standalone](#snowflake-standalone) an image for a snowflake entrypoint, serves as a go between for snowflake clients and snowflake bridges.
+- [arti](#arti) an image for an in-development, experimental Tor implementation in Rust.
+- [onionshare](#onionshare) an image for OnionShare, a tool to send and receive files and create chat rooms over Tor Onion Services. 
+
 ## torbase
 Base tor image, just alpine with tor.
 ```bash
