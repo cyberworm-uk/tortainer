@@ -13,10 +13,10 @@ RUN poetry install --only main
 FROM ghcr.io/guest42069/torbase:latest
 ARG WORKDIR
 RUN apk add python3
-RUN addgroup -S onionshare && adduser -S onionshare -G onionshare && mkdir /config && chmod 755 /config && chown onionshare:onionshare /config && mkdir /share && chmod 755 /share && chown onionshare:onionshare /share
+RUN addgroup -S onionshare && adduser -S onionshare -G onionshare -H -h /share && mkdir /config && chmod 755 /config && chown onionshare:onionshare /config && mkdir /share && chmod 755 /share && chown onionshare:onionshare /share
 VOLUME /config /share
 COPY --from=build ${WORKDIR} ${WORKDIR}
 COPY torrc /etc/tor/torrc-defaults
 USER onionshare
 WORKDIR ${WORKDIR}/cli
-ENTRYPOINT [ "${WORKDIR}/cli/.venv/bin/onionshare-cli" ]
+ENTRYPOINT [ "./.venv/bin/onionshare-cli" ]
