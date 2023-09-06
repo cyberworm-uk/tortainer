@@ -1,0 +1,16 @@
+name: remove old torproxy
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 21 * * 6'
+jobs:
+  remove-old-torproxy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'torproxy'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
