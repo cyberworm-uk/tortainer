@@ -7,24 +7,102 @@ jobs:
   remove-old:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete old tailscale
-        uses: smartsquaregmbh/delete-old-packages@v0.5.0
-        with:
+      - uses: actions/delete-package-versions@v4
+        name: delete-old-untagged
+        with: 
+          package-name: 'torbase'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
           token: ${{ secrets.PAT }}
-          user: ${{ github.actor }}
-          type: container
-          keep: 12
-          names: |
-            torbase
-            torproxy
-            snowflake
-            obfs4
-            obfs4-bridge
-            obfs4-proxy
-            snowflake-proxy
-            snowflake-standalone
-            arti
-            dohproxy
-            i6r9c
-            tailscale
-            doh-front
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'torproxy'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'snowflake'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'obfs4'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'obfs4-bridge'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'obfs4-proxy'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'snowflake-proxy'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'snowflake-standalone'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'arti'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'onionshare'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'dohproxy'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'doh-front'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'i6r9c'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'tailscale'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
