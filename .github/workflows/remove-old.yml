@@ -2,7 +2,7 @@ name: Remove Old
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 16 * * *'
+    - cron: '29 * * * *'
 jobs:
   remove-old:
     runs-on: ubuntu-latest
