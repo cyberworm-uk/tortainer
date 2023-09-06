@@ -1,0 +1,16 @@
+name: remove old snowflake-standalone
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 22 * * 6'
+jobs:
+  remove-old-snowflake-standalone:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'snowflake-standalone'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
