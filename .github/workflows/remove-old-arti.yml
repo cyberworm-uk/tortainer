@@ -1,0 +1,16 @@
+name: remove old arti
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 22 * * 6'
+jobs:
+  remove-old-arti:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'arti'
+          package-type: 'container'
+          min-versions-to-keep: 30
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.PAT }}
