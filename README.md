@@ -3,7 +3,7 @@ General purpose tor container images with a shared base.
 
 In the below examples, `podman` should be interchangable with `docker` without any other changes to the commands, with the exception of `podman generate ...` to create systemd services.
 
-All images should be available for the following platforms: `linux/amd64` (x86_64), `linux/arm/v7` (ARM 32bit), `linux/arm64` (aarch64).
+All images should be available for the following platforms: `linux/amd64` (x86_64), `linux/386` (i386), `linux/arm/v7` (arm), `linux/arm64` (aarch64).
 
 ## Container Image Documentation
 
