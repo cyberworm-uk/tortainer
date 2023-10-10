@@ -37,6 +37,28 @@ podman run \
   --nickname myrelay \
   --contactinfo myemail@mydomain.com
 ```
+or, as a quadlet
+
+```.service
+[Unit]
+Description=Tor relay container
+
+[Container]
+Image=ghcr.io/guest42069/torbase:latest
+AutoUpdate=registry
+Exec=--orport 9001 --nickname myrelay --contactinfo myemail@mydomain.com
+
+Volume=tor-datadir.volume:/var/lib/tor
+PublishPort=9001:9001
+PublishPort=[::]:9001:9001
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target
+```
 
 ## torproxy
 Basic tor (client) proxy. **N.B.** binds to 0.0.0.0 inside the container, to allow for use in inter-container networking or exposure by publishing, do *not* use with host networking.
