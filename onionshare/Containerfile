@@ -1,7 +1,7 @@
 ARG WORKDIR="/app"
 FROM docker.io/library/alpine:latest AS build
 ARG WORKDIR
-ARG VERSION=python-3.11
+ARG VERSION=release-2.6.1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 RUN apk add python3 python3-dev poetry gcc g++ make musl-dev linux-headers libffi-dev git && poetry config virtualenvs.in-project true
