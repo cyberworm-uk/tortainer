@@ -374,7 +374,6 @@ podman run \
   --name onion-tor \
   -v onion-tor-datadir:/var/lib/tor \
   ghcr.io/guest42069/torbase:latest \
-  --socksport 0 \
   --hiddenservicedir /var/lib/tor/website \
   --hiddenserviceport "80 127.0.0.1:80"
 # create a basic nginx config
