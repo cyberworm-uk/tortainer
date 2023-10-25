@@ -2,4 +2,5 @@ FROM docker.io/library/alpine:latest
 RUN apk add tor --no-cache
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/var/lib/tor" ]
+HEALTHCHECK CMD tor-resolve 127.0.0.1
 ENTRYPOINT [ "/usr/bin/tor" ]
