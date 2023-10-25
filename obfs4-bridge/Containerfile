@@ -5,4 +5,4 @@ COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
 RUN apk add libcap-utils --no-cache
 RUN setcap cap_net_bind_service=+ep /usr/bin/obfs4proxy
 EXPOSE 443
-ENTRYPOINT [ "/usr/bin/tor", "--socksport", "0", "--bridgerelay", "1", "--servertransportplugin", "obfs4 exec /usr/bin/obfs4proxy", "--extorport", "auto", "--servertransportlistenaddr", "obfs4 0.0.0.0:443" ]
+ENTRYPOINT [ "/usr/bin/tor", "--bridgerelay", "1", "--servertransportplugin", "obfs4 exec /usr/bin/obfs4proxy", "--extorport", "auto", "--servertransportlistenaddr", "obfs4 0.0.0.0:443" ]
