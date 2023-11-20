@@ -16,7 +16,7 @@ All images should be available for the following platforms: `linux/amd64` (x86_6
 - [snowflake-proxy](#snowflake-proxy) an image for a Tor proxy (client) connecting over snowflake.
 - [snowflake-standalone](#snowflake-standalone) an image for a snowflake entrypoint, serves as a go between for snowflake clients and snowflake bridges.
 - [arti](#arti) an image for an in-development, experimental Tor implementation in Rust.
-- [onionshare](#onionshare) an image for OnionShare, a tool to send and receive files and create chat rooms over Tor Onion Services. 
+<!-- - [onionshare](#onionshare) an image for OnionShare, a tool to send and receive files and create chat rooms over Tor Onion Services. -->
 
 ## torbase
 Base tor image, just alpine with tor.
@@ -204,7 +204,7 @@ bridges = [
 ' > $(podman volume inspect -f '{{ .Mountpoint }}' arti-config)/bridges.toml
 podman run --detach --pod arti --volume arti-config:/arti/.config/arti/arti.d --rm ghcr.io/guest42069/arti:latest
 ```
-
+<!--
 ## onionshare
 [`onionshare-cli`](https://onionshare.org/) is a project used to provide web, file sharing and receiving and chat services over Tor onion services.
 
@@ -360,6 +360,7 @@ systemctl enable --now container-snowflake.service
 # the container will now log to journald like other services, keeps service logs in with other systemd services.
 journalctl -u container-snowflake.service
 ```
+-->
 
 ## hidden / onion service website
 This example is `podman` specific (as we'll be taking advantage of pods, which aren't directly interchangable with `docker`).
