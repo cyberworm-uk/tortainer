@@ -39,6 +39,7 @@ podman run \
 ```
 or, as a quadlet
 
+`tor-relay.container`
 ```.service
 [Unit]
 Description=Tor relay container
@@ -58,6 +59,13 @@ TimeoutStartSec=900
 
 [Install]
 WantedBy=default.target
+```
+
+`tor-datadir.volume`
+```.service
+[Volume]
+User=100
+Group=65533
 ```
 
 ## torproxy
