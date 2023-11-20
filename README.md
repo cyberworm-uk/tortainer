@@ -16,6 +16,7 @@ All images should be available for the following platforms: `linux/amd64` (x86_6
 - [snowflake-proxy](#snowflake-proxy) an image for a Tor proxy (client) connecting over snowflake.
 - [snowflake-standalone](#snowflake-standalone) an image for a snowflake entrypoint, serves as a go between for snowflake clients and snowflake bridges.
 - [arti](#arti) an image for an in-development, experimental Tor implementation in Rust.
+- [onion service](#onion-service) example of a basic onion service running with containers.
 <!-- - [onionshare](#onionshare) an image for OnionShare, a tool to send and receive files and create chat rooms over Tor Onion Services. -->
 
 ## torbase
@@ -362,67 +363,97 @@ journalctl -u container-snowflake.service
 ```
 -->
 
-## hidden / onion service website
-This example is `podman` specific (as we'll be taking advantage of pods, which aren't directly interchangable with `docker`).
-In this example creates a static hello world page using nginx.
-This could be further hardened and a more sophisticated example may be added later. This example only intends to outline the general process and isn't intended to be production ready.
+## onion service
+This example is `podman` specific, using quadlets.
+
+`onion-tor.container`
+```.service
+[Unit]
+Description=Onion Tor container
+
+[Container]
+Image=ghcr.io/guest42069/torproxy:latest
+AutoUpdate=registry
+
+Exec=--hiddenservicedir /var/lib/tor/onion --hiddenserviceport "80 systemd-onion-nginx:80"
+
+Volume=onion-tor.volume:/var/lib/tor
+
+Network=onion.network
+Network=onion-ext.network
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target
+```
+
+`onion-tor.volume`
+```.service
+[Volume]
+User=100
+Group=65533
+```
+
+`onion.network`
+```.service
+[Network]
+IPv6=true
+```
+
+`onion-ext.network`
+```.service
+[Network]
+IPv6=true
+Internal=true
+```
+
+Here is the core of the Onion Service, we have a Tor container along with storage for it's data (onion keys, guards, etc). Note that we have two networks, one internal and the other not. We will attach our service to the internal one so it cannot directly access the internet.
+
+`onion-nginx.container`
+```.service
+[Unit]
+Description=Onion Nginx container
+
+[Container]
+Image=docker.io/library/nginx:alpine
+AutoUpdate=registry
+
+Volume=onion-nginx-config.volume:/etc/nginx/conf.d
+Volume=onion-nginx-content.volume:/usr/share/nginx/html
+
+Network=onion.network
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target
+RequiredBy=onion-tor.service
+```
+
+`onion-nginx-config.volume`
+```.service
+[Volume]
+```
+
+`onion-nginx-content.volume`
+```.service
+[Volume]
+```
+
+A very basic nginx, with a volume setup for config files and site content. Note that it's only attached to the internal network. Also note it has a `RequiredBy` for the `onion-tor.service` which is the tor container, this is to ensure that Tor can resolve the provided hostname of `systemd-onion-nginx` for the `HiddenServicePort` directive.
+
+The below assumes these will be run as rootless containers, with the .container, .network and .volume unit files being placed in a folder at `~/.config/containers/systemd/`. We'll start the services.
 ```bash
-# create persistent storage for onion webservice config
-podman volume create onion-nginx-conf
-podman volume create onion-var-www-html
-# create persistent storage for onion tor data
-podman volume create onion-tor-datadir
-# create a pod to run our services in
-podman pod create --name onion
-# create the tor container within to handle running the onion service
-podman run \
-  -d \
-  --rm \
-  --pod onion \
-  --label "io.containers.autoupdate=registry" \
-  --name onion-tor \
-  -v onion-tor-datadir:/var/lib/tor \
-  ghcr.io/guest42069/torbase:latest \
-  --hiddenservicedir /var/lib/tor/website \
-  --hiddenserviceport "80 127.0.0.1:80"
-# create a basic nginx config
-echo 'server {
-  listen 80;
-  access_log off;
-  root /var/www/html;
-  index index.html;
-  server_name _;
-  server_tokens off;
-}' > $(podman volume inspect -f '{{ .Mountpoint }}' onion-nginx-conf)/website.conf
-# create a basic html page
-echo '<html>
-<head>
-<title>Hello World</title>
-</head>
-<body>
-<h1>Hello World</h1>
-</body>
-</html>' > $(podman volume inspect -f '{{ .Mountpoint }}' onion-var-www-html)/index.html
-# create the nginx container within the pod to handle the incoming http requests
-podman run \
-  -d \
-  --rm \
-  --pod onion \
-  --label "io.containers.autoupdate=registry" \
-  --name onion-nginx \
-  -v onion-nginx-conf:/etc/nginx/conf.d \
-  -v onion-var-www-html:/var/www/html \
-  docker.io/library/nginx:alpine
-# obtain our onion hostname
-cat $(podman volume inspect -f '{{ .Mountpoint }}' onion-tor-datadir)/website/hostname
-# visit the site with Tor Browser and check that you've got your hello world message.
-# podman log onion-tor to check tor logs
-# podman log onion-nginx to check nginx logs
-# if all looks well, generate a systemd service for the onion pod.
-(cd /etc/systemd/system; podman generate systemd --new --name --files onion)
-# enable the systemd service for the pod.
-systemctl enable --now pod-onion.service
-# there will also be services for the two containers, these are set as required by the onion pod service and will start with it automatically.
-# journalctl -u container-onion-tor.service to check tor logs
-# journalctl -u container-onion-nginx.service to check nginx logs
+systemctl --user daemon-reload
+systemctl --user start onion-tor
+```
+
+We can obtain the address of the onion service that was created by running the following
+```bash
+podman exec systemd-onion-tor cat /var/lib/tor/onion/hostname
 ```
