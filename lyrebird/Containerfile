@@ -1,15 +1,15 @@
 FROM --platform=$BUILDPLATFORM docker.io/alpine/git:latest AS source
 WORKDIR /go/src
-ARG VERSION=obfs4proxy-0.0.14
-RUN git clone --depth=1 --branch=${VERSION} https://gitlab.com/yawning/obfs4.git .
+ARG VERSION=main
+RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird.git .
 
 FROM --platform=$BUILDPLATFORM docker.io/library/golang:alpine AS build
 ARG TARGETOS TARGETARCH
 ENV GOOS="$TARGETOS" GOARCH="$TARGETARCH" GOFLAGS="-buildvcs=false -trimpath" CGO_ENABLED=0
 COPY --from=source /go/src /go/src
-WORKDIR /go/src/obfs4proxy
+WORKDIR /go/src
 RUN --mount=type=cache,target=/go/pkg go mod download
-RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' .
+RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' -o /lyrebird ./cmd/lyrebird
 
 FROM scratch
-COPY --from=build /go/src/obfs4proxy/obfs4proxy /obfs4proxy
+COPY --from=build /lyrebird /lyrebird
