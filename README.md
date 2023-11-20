@@ -401,13 +401,13 @@ Group=65533
 ```.service
 [Network]
 IPv6=true
+Internal=true
 ```
 
 `onion-ext.network`
 ```.service
 [Network]
 IPv6=true
-Internal=true
 ```
 
 Here is the core of the Onion Service, we have a Tor container along with storage for it's data (onion keys, guards, etc). Note that we have two networks, one internal and the other not. We will attach our service to the internal one so it cannot directly access the internet.
