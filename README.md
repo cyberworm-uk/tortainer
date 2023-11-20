@@ -10,7 +10,7 @@ All images should be available for the following platforms: `linux/amd64` (x86_6
 - [torbase](#torbase) an image which serves as a common base that more complete images are build on.
 - [torproxy](#torproxy) an image for a regular Tor proxy (client) image.
 - [obfs4](#obfs4) an image which contains compiled obfs4-proxy binaries only.
-- [obfs4-proxy](#obfs4-proxy) an image for a Tor proxy (client) connecting over obfs4.
+- [obfs4-proxy/lyrebird-proxy](#obfs4-proxy) an image for a Tor proxy (client) connecting over meek_lite, obfs2, obfs3, obfs4 and scramblesuit.
 - [obfs4-bridge](#obfs4-bridge) an image for a Tor bridge (server) allowing clients to connect into the Tor network over obfs4.
 - [snowflake](#snowflake) an image which contains compiled snowflake client binary only.
 - [snowflake-proxy](#snowflake-proxy) an image for a Tor proxy (client) connecting over snowflake.
