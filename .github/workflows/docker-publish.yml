@@ -44,13 +44,13 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
 
-      - name: Build and push obsf4-bin
+      - name: Build and push lyrebird-bin
         uses: docker/build-push-action@v5
         with:
-          context: obfs4/
+          context: lyrebird/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4:latest
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird:latest
 
       - name: Build and push obfs4-proxy
         uses: docker/build-push-action@v5
@@ -58,7 +58,7 @@ jobs:
           context: obfs4-proxy/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest,${{ env.REGISTRY }}/${{ github.actor }}/lyrebird-proxy:latest
 
       - name: Build and push obfs4-bridge
         uses: docker/build-push-action@v5

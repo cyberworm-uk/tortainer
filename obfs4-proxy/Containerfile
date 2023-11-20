@@ -1,6 +1,6 @@
-FROM ghcr.io/guest42069/obfs4:latest AS bin
+FROM ghcr.io/guest42069/lyrebird:latest AS bin
 
 FROM ghcr.io/guest42069/torbase:latest
-COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
+COPY --from=bin /lyrebird /usr/bin/lyrebird
 EXPOSE 9050
-ENTRYPOINT [ "/usr/bin/tor", "--clienttransportplugin", "obfs4 exec /usr/bin/obfs4proxy", "--socksport", "0.0.0.0:9050", "--usebridges", "1" ]
+ENTRYPOINT [ "/usr/bin/tor", "--clienttransportplugin", "meek_lite,obfs2,obfs3,obfs4,scramblesuit exec /usr/bin/lyrebird", "--socksport", "0.0.0.0:9050", "--usebridges", "1" ]
