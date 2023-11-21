@@ -17,7 +17,6 @@ All images should be available for the following platforms: `linux/amd64` (x86_6
 - [snowflake-standalone](#snowflake-standalone) an image for a snowflake entrypoint, serves as a go between for snowflake clients and snowflake bridges.
 - [arti](#arti) an image for an in-development, experimental Tor implementation in Rust.
 - [onion service](#onion-service) example of a basic onion service running with containers.
-<!-- - [onionshare](#onionshare) an image for OnionShare, a tool to send and receive files and create chat rooms over Tor Onion Services. -->
 
 ## torbase
 Base tor image, just alpine with tor.
@@ -97,7 +96,7 @@ COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
 ```
 
 ## lyrebird-proxy
-Basic tor (client) proxy configured to use an obfs4 bridge. See notes for `torproxy` above.
+Basic tor (client) proxy configured to use an meek_lite, obfs2, obfs3, scramblesuit or obfs4 bridge. See notes for `torproxy` above.
 ```bash
 # keep long term data in a persistent container volume (important for guard context, descriptor caches, etc)
 podman volume create tor-datadir
@@ -175,21 +174,21 @@ podman run \
 ```
 
 ## arti
-An in-development rust implementation of Tor, as a client. However it only binds to localhost so it's only suitable for use *within pods* _or_ *with host networking*.
+An in-development, experimental rust implementation of Tor.
 ```bash
 # host networking
-podman run --detach --network host ghcr.io/guest42069/arti:latest
+podman run --detach -p 127.0.0.1:9050:9050 ghcr.io/guest42069/arti:latest
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 # _OR_ pods (where the containers will share localhost)
-podman pod create --name arti
-podman run --detach --pod arti --rm ghcr.io/guest42069/arti:latest
-podman run --pod arti --rm -it docker.io/library/alpine sh
+podman network create arti
+podman run --detach --network arti --name arti --rm ghcr.io/guest42069/arti:latest
+podman run --network arti --rm -it docker.io/library/alpine sh
 # the alpine container we are now in can now access arti's socksport on 127.0.0.1:9050
 apk add curl
-(curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
+(curl -x socks5h://arti:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 # To persist state, etc mount a volume to /arti inside the container
 podman volume create arti-state
-podman run --detach --pod arti --volume arti-state:/arti --rm ghcr.io/guest42069/arti:latest
+podman run --detach --network arti --volume arti-state:/arti --name arti --rm ghcr.io/guest42069/arti:latest
 # To use a custom arti.toml config file place it in a directory and mount it into the container.
 # For example, to configure a bridge ...
 podman volume create arti-config
@@ -203,165 +202,8 @@ bridges = [
   "Bridge 192.0.2.78:9001 6078000DFE0046ABCDFAD191144399CB52FFFFF8",
 ]
 ' > $(podman volume inspect -f '{{ .Mountpoint }}' arti-config)/bridges.toml
-podman run --detach --pod arti --volume arti-config:/arti/.config/arti/arti.d --rm ghcr.io/guest42069/arti:latest
+podman run --detach --network arti --volume arti-config:/arti/.config/arti/arti.d --name arti --rm ghcr.io/guest42069/arti:latest
 ```
-<!--
-## onionshare
-[`onionshare-cli`](https://onionshare.org/) is a project used to provide web, file sharing and receiving and chat services over Tor onion services.
-
-This is still a bit of a work in progress and may need some tweaking in future and more extensive documentation of use cases.
-
-```bash
-# create storage to container persistent files
-podman create volume onionshare-config
-# launch a chat server (I.E. requires only the .onion address and not an additional private key, )
-podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat
-#... outputs the following
-#Give this address and private key to the recipient:
-#http://yud4dyoi4pk344rjjlm34bgeszflbra2qvxc732kxvssgt2muv6vzryd.onion
-#Private key: 6MZ7PXM7GO3H2QNMOM6VMXGUE7PJ2KJWUJE2TETVGU35YCCDHTEA
-#... ctrl-c
-```
-
-In the above example, the servers private key won't persist (I.E. relaunching it won't give the same address). We can create a persistent config (stored in the volume) with the `--persistent ...` flag, which is a path to a config file.
-
-```bash
-podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat --persistent /config/chat
-#... outputs the following
-#Give this address and private key to the recipient:
-#http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
-#Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
-#... ctrl-c
-podman run --rm -v onionshare-config:/config ghcr.io/guest42069/onionshare --chat --persistent /config/chat
-#... outputs the following, with the same address and key
-#Give this address and private key to the recipient:
-#http://vrxgl5w4b5g3eoo4ibrpaejlyieeofgeanrjllmrru3ikt6v6tis3xad.onion
-#Private key: V3GL36LUBLKS3L55SIW6327JCGZRZ7CQ5SZ6G3QZYNXK4S3POSCA
-#... ctrl-c
-```
-
-To try and avoid any confusion with shared files/folders, a separate volume mount point of `/share` exists.
-
-```bash
-podman run --rm -v onionshare-config:/config -v /path/to/share:/share:Z ghcr.io/guest42069/onionshare --persist /config/share /share
-#... outputs the following
-#Give this address and private key to the recipient:
-#http://7bc7khljgal64ktjfrhjk5lom3td6pguif6zxherkiznz5wh4kn5zfyd.onion
-#Private key: AFY4KS5YJFSKZGIZBYKVRBJXWV6OW5SY2JY3NGWA2OJFZX45TNRA
-#...
-```
-
-Receiving files submitted by a remote party.
-
-```bash
-podman run --rm -v onionshare-config:/config -v onionshare-incoming:/share ghcr.io/guest42069/onionshare --persist /config/receive --receive
-#... outputs the following
-#Give this address and private key to the sender:
-#http://4veh5esudna6lhafb2qbu7vatgoakkiysee4faqgzg7lfbsgh7y64cyd.onion
-#Private key: BSY5R6QP4USGF7GVENOSEIAE3C6Q4UT6DYFFW5CC7HPUQKCWQRFQ
-#... any submitted files will be available from the onionshare-incoming directory
-ls -ln `docker volume inspect -f '{{ .Mountpoint }}' onionshare-incoming`/OnionShare
-total 0
-drwxr-xr-x 1 101 101 72 Sep  5 12:54 2023-09-05
-#...
-```
-
-Full help screen for other commands.
-
-```bash
-╭───────────────────────────────────────────╮
-│    *            ▄▄█████▄▄            *    │
-│               ▄████▀▀▀████▄     *         │
-│              ▀▀█▀       ▀██▄              │
-│      *      ▄█▄          ▀██▄             │
-│           ▄█████▄         ███        -+-  │
-│             ███         ▀█████▀           │
-│             ▀██▄          ▀█▀             │
-│         *    ▀██▄       ▄█▄▄     *        │
-│ *             ▀████▄▄▄████▀               │
-│                 ▀▀█████▀▀                 │
-│             -+-                     *     │
-│   ▄▀▄               ▄▀▀ █                 │
-│   █ █     ▀         ▀▄  █                 │
-│   █ █ █▀▄ █ ▄▀▄ █▀▄  ▀▄ █▀▄ ▄▀▄ █▄▀ ▄█▄   │
-│   ▀▄▀ █ █ █ ▀▄▀ █ █ ▄▄▀ █ █ ▀▄█ █   ▀▄▄   │
-│                                           │
-│                  v2.6.1                   │
-│                                           │
-│          https://onionshare.org/          │
-╰───────────────────────────────────────────╯
-
-usage: onionshare-cli [-h] [--receive] [--website] [--chat] [--local-only]
-                      [--connect-timeout SECONDS] [--config FILENAME]
-                      [--persistent FILENAME] [--title TITLE] [--public]
-                      [--auto-start-timer SECONDS] [--auto-stop-timer SECONDS]
-                      [--no-autostop-sharing] [--data-dir data_dir]
-                      [--webhook-url webhook_url] [--disable-text]
-                      [--disable-files] [--disable_csp]
-                      [--custom_csp custom_csp] [-v]
-                      [filename ...]
-
-positional arguments:
-  filename                  List of files or folders to share
-
-options:
-  -h, --help                show this help message and exit
-  --receive                 Receive files
-  --website                 Publish website
-  --chat                    Start chat server
-  --local-only              Don't use Tor (only for development)
-  --connect-timeout SECONDS
-                            Give up connecting to Tor after a given amount of
-                            seconds (default: 120)
-  --config FILENAME         Filename of custom global settings
-  --persistent FILENAME     Filename of persistent session
-  --title TITLE             Set a title
-  --public                  Don't use a private key
-  --auto-start-timer SECONDS
-                            Start onion service at scheduled time (N seconds
-                            from now)
-  --auto-stop-timer SECONDS
-                            Stop onion service at schedule time (N seconds
-                            from now)
-  --no-autostop-sharing     Share files: Continue sharing after files have
-                            been sent (default is to stop sharing)
-  --data-dir data_dir       Receive files: Save files received to this
-                            directory
-  --webhook-url webhook_url
-                            Receive files: URL to receive webhook
-                            notifications
-  --disable-text            Receive files: Disable receiving text messages
-  --disable-files           Receive files: Disable receiving files
-  --disable_csp             Publish website: Disable the default Content
-                            Security Policy header (allows your website to use
-                            third-party resources)
-  --custom_csp custom_csp   Publish website: Set a custom Content Security
-                            Policy header
-  -v, --verbose             Log OnionShare errors to stdout, and web errors to
-                            disk
-```
-
-## systemd service
-Podman (not Docker, sadly) can automatically generate systemd service files that allow you to turn existing containers or pods into systemd managed services.
-In this example, we'll create a systemd service for a `snowflake-standalone` container.
-```bash
-# host networking is prefered, to avoid another layer of NAT traversal: container <-(NAT)-> host, or worse: container <-(NAT)-> host <-(NAT)-> router
-# --label allows us to set a label to take advantage of the 'podman auto-update' command which automatically pulls new images for any labeled containers.
-podman run \
-  -d \
-  --rm \
-  --name snowflake \
-  --label "io.containers.autoupdate=registry" \
-  --network host \
-  ghcr.io/guest42069/snowflake-standalone:latest
-# generate the service file for the container under /etc/systemd/system, referencing the container by the name we assigned.
-(cd /etc/systemd/system;podman generate systemd --new --name --files snowflake)
-# enable the systemd service to ensure it's automatically started by the OS on boot.
-systemctl enable --now container-snowflake.service
-# the container will now log to journald like other services, keeps service logs in with other systemd services.
-journalctl -u container-snowflake.service
-```
--->
 
 ## onion service
 This example is `podman` specific, using quadlets.
