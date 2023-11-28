@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/go/pkg go mod download
 RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' .
 
 FROM docker.io/library/alpine:latest
-RUN apk add ca-certificates tzdata --no-cache
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add ca-certificates tzdata --no-cache
 COPY --from=build /go/src/proxy/proxy /bin/proxy
 USER 1000
 ENTRYPOINT [ "/bin/proxy" ]
