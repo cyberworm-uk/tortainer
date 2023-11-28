@@ -1,2 +1,2 @@
 FROM docker.io/library/alpine:latest
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive upgrade
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive -U upgrade
