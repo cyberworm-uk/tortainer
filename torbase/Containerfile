@@ -1,5 +1,5 @@
 FROM ghcr.io/guest42069/base:latest
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add tor
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk/$TARGETARCH --no-interactive add tor
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/var/lib/tor" ]
 HEALTHCHECK CMD tor-resolve 127.0.0.1

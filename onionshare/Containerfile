@@ -4,7 +4,7 @@ ARG WORKDIR
 ARG VERSION=main
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add python3 python3-dev poetry gcc g++ make musl-dev linux-headers libffi-dev git && poetry config virtualenvs.in-project true
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk/$TARGETARCH --no-interactive add python3 python3-dev poetry gcc g++ make musl-dev linux-headers libffi-dev git && poetry config virtualenvs.in-project true
 WORKDIR ${WORKDIR}
 RUN git clone --depth=1 -b ${VERSION} https://github.com/onionshare/onionshare.git .
 WORKDIR ${WORKDIR}/cli
@@ -12,7 +12,7 @@ RUN poetry install --only main
 
 FROM ghcr.io/guest42069/torbase:latest
 ARG WORKDIR
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add python3
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk/$TARGETARCH --no-interactive add python3
 RUN addgroup -S onionshare && adduser -S onionshare -G onionshare -H -h /share && mkdir /config && chmod 755 /config && chown onionshare:onionshare /config && mkdir /share && chmod 755 /share && chown onionshare:onionshare /share
 VOLUME /config /share
 COPY --from=build ${WORKDIR} ${WORKDIR}

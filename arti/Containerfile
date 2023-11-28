@@ -1,12 +1,12 @@
 FROM docker.io/library/rust:alpine AS build
 ENV RUSTFLAGS="-C target-feature=-crt-static"
 ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk/$TARGETARCH --no-interactive add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
 RUN cargo install arti
 
 FROM ghcr.io/guest42069/base:latest
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
-RUN --mount=type=cache,target=/apk apk --cache-dir /apk --no-interactive add xz-libs sqlite-libs openssl libgcc
+RUN --mount=type=cache,target=/apk apk --cache-dir /apk/$TARGETARCH --no-interactive add xz-libs sqlite-libs openssl libgcc
 RUN addgroup -S arti && adduser -h /arti -S arti -G arti
 USER arti:arti
 COPY arti.toml /arti/arti.toml
