@@ -1,4 +1,4 @@
-FROM ghcr.io/guest42069/base:latest
+FROM ghcr.io/cyberworm-uk/base:latest
 RUN apk --no-cache --no-interactive add tor
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/var/lib/tor" ]

@@ -1,5 +1,5 @@
 ARG WORKDIR="/app"
-FROM ghcr.io/guest42069/base:latest AS build
+FROM ghcr.io/cyberworm-uk/base:latest AS build
 ARG WORKDIR
 ARG VERSION=main
 ENV PYTHONUNBUFFERED=1
@@ -10,7 +10,7 @@ RUN git clone --depth=1 -b ${VERSION} https://github.com/onionshare/onionshare.g
 WORKDIR ${WORKDIR}/cli
 RUN poetry install --only main
 
-FROM ghcr.io/guest42069/torbase:latest
+FROM ghcr.io/cyberworm-uk/torbase:latest
 ARG WORKDIR
 RUN apk --no-cache --no-interactive add python3
 RUN addgroup -S onionshare && adduser -S onionshare -G onionshare -H -h /share && mkdir /config && chmod 755 /config && chown onionshare:onionshare /config && mkdir /share && chmod 755 /share && chown onionshare:onionshare /share

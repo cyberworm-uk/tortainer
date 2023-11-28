@@ -32,7 +32,7 @@ podman run \
   --name tor-relay \
   -v tor-datadir:/var/lib/tor \
   -p ${ORPORT}:${ORPORT} \
-  ghcr.io/guest42069/torbase:latest \
+  ghcr.io/cyberworm-uk/torbase:latest \
   --orport ${ORPORT} \
   --nickname myrelay \
   --contactinfo myemail@mydomain.com
@@ -45,7 +45,7 @@ or, as a quadlet
 Description=Tor relay container
 
 [Container]
-Image=ghcr.io/guest42069/torbase:latest
+Image=ghcr.io/cyberworm-uk/torbase:latest
 AutoUpdate=registry
 Exec=--orport 9001 --nickname myrelay --contactinfo myemail@mydomain.com
 
@@ -80,7 +80,7 @@ podman run \
   --name torproxy \
   -v tor-datadir:/var/lib/tor \
   -p 127.0.0.1:9050:9050 \
-  ghcr.io/guest42069/torproxy:latest
+  ghcr.io/cyberworm-uk/torproxy:latest
 # test the tor connection
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 ```
@@ -89,7 +89,7 @@ podman run \
 Just an obfs4 binary, located inside a scratch image at `/obfs4proxy`. Used for later images, not much use on it's own.
 
 ```Dockerfile
-FROM ghcr.io/guest42069/obfs4:latest AS bin
+FROM ghcr.io/cyberworm-uk/obfs4:latest AS bin
 FROM docker.io/library/alpine:latest
 COPY --from=bin /obfs4proxy /usr/bin/obfs4proxy
 ...
@@ -107,7 +107,7 @@ podman run \
   --name obfs4-proxy \
   -p 127.0.0.1:9050:9050 \
   -v tor-datadir:/var/lib/tor \
-  ghcr.io/guest42069/obfs4-proxy:latest --bridge "obfs4 10.20.30.40:12345 3D7D7A39CCA78C7B0448AFA147EF4CC391564D03 cert=YvJSxrXcnXYZ+C9hsIr18bwsm5u5dtZG9DrLTo8CqY8mZlBjhXcUssJJ185mX+JCc/LSnQ iat-mode=0"
+  ghcr.io/cyberworm-uk/obfs4-proxy:latest --bridge "obfs4 10.20.30.40:12345 3D7D7A39CCA78C7B0448AFA147EF4CC391564D03 cert=YvJSxrXcnXYZ+C9hsIr18bwsm5u5dtZG9DrLTo8CqY8mZlBjhXcUssJJ185mX+JCc/LSnQ iat-mode=0"
 # test the tor connection
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 ```
@@ -127,7 +127,7 @@ podman run \
   -p 443:443 \
   -p ${ORPORT}:${ORPORT} \
   -v tor-datadir:/var/lib/tor \
-  ghcr.io/guest42069/obfs4-bridge:latest \
+  ghcr.io/cyberworm-uk/obfs4-bridge:latest \
   --contactinfo myemail@mydomain.com \
   --orport ${ORPORT} \
   --nickname myrelay
@@ -138,7 +138,7 @@ podman logs -f
 Just a snowflake client binary, located inside a scratch image at `/client`. Used for later images, not much use on it's own.
 
 ```Dockerfile
-FROM ghcr.io/guest42069/snowflake:latest AS bin
+FROM ghcr.io/cyberworm-uk/snowflake:latest AS bin
 FROM docker.io/library/alpine:latest
 COPY --from=bin /client /usr/bin/client
 ...
@@ -156,7 +156,7 @@ podman run \
   --name snowflake-proxy \
   -p 127.0.0.1:9050:9050 \
   -v tor-datadir:/var/lib/tor \
-  ghcr.io/guest42069/snowflake-proxy:latest
+  ghcr.io/cyberworm-uk/snowflake-proxy:latest
 # test the tor connection
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 ```
@@ -170,25 +170,25 @@ podman run \
   --rm \
   --name snowflake \
   --network host \
-  ghcr.io/guest42069/snowflake-standalone:latest
+  ghcr.io/cyberworm-uk/snowflake-standalone:latest
 ```
 
 ## arti
 An in-development, experimental rust implementation of Tor.
 ```bash
 # host networking
-podman run --detach -p 127.0.0.1:9050:9050 ghcr.io/guest42069/arti:latest
+podman run --detach -p 127.0.0.1:9050:9050 ghcr.io/cyberworm-uk/arti:latest
 (curl -x socks5h://127.0.0.1:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 # _OR_ pods (where the containers will share localhost)
 podman network create arti
-podman run --detach --network arti --name arti --rm ghcr.io/guest42069/arti:latest
+podman run --detach --network arti --name arti --rm ghcr.io/cyberworm-uk/arti:latest
 podman run --network arti --rm -it docker.io/library/alpine sh
 # the alpine container we are now in can now access arti's socksport on 127.0.0.1:9050
 apk add curl
 (curl -x socks5h://arti:9050/ https://check.torproject.org | grep -F Congratulations.) && echo "Success" || echo "Failure"
 # To persist state, etc mount a volume to /arti inside the container
 podman volume create arti-state
-podman run --detach --network arti --volume arti-state:/arti --name arti --rm ghcr.io/guest42069/arti:latest
+podman run --detach --network arti --volume arti-state:/arti --name arti --rm ghcr.io/cyberworm-uk/arti:latest
 # To use a custom arti.toml config file place it in a directory and mount it into the container.
 # For example, to configure a bridge ...
 podman volume create arti-config
@@ -202,7 +202,7 @@ bridges = [
   "Bridge 192.0.2.78:9001 6078000DFE0046ABCDFAD191144399CB52FFFFF8",
 ]
 ' > $(podman volume inspect -f '{{ .Mountpoint }}' arti-config)/bridges.toml
-podman run --detach --network arti --volume arti-config:/arti/.config/arti/arti.d --name arti --rm ghcr.io/guest42069/arti:latest
+podman run --detach --network arti --volume arti-config:/arti/.config/arti/arti.d --name arti --rm ghcr.io/cyberworm-uk/arti:latest
 ```
 
 ## onion service
@@ -214,7 +214,7 @@ This example is `podman` specific, using quadlets.
 Description=Onion Tor container
 
 [Container]
-Image=ghcr.io/guest42069/torproxy:latest
+Image=ghcr.io/cyberworm-uk/torproxy:latest
 AutoUpdate=registry
 
 Exec=--hiddenservicedir /var/lib/tor/onion --hiddenserviceport "80 systemd-onion-nginx:80"

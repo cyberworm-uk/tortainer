@@ -4,7 +4,7 @@ ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 RUN apk --no-interactive add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
 RUN cargo install arti
 
-FROM ghcr.io/guest42069/base:latest
+FROM ghcr.io/cyberworm-uk/base:latest
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
 RUN apk --no-cache --no-interactive add xz-libs sqlite-libs libgcc && addgroup -S arti && adduser -h /arti -S arti -G arti
 USER arti:arti

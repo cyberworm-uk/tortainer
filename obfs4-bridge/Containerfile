@@ -1,6 +1,6 @@
-FROM ghcr.io/guest42069/lyrebird:latest AS bin
+FROM ghcr.io/cyberworm-uk/lyrebird:latest AS bin
 
-FROM ghcr.io/guest42069/torbase:latest
+FROM ghcr.io/cyberworm-uk/torbase:latest
 COPY --from=bin /lyrebird /usr/bin/lyrebird
 RUN apk --no-cache --no-interactive add libcap-utils
 RUN setcap cap_net_bind_service=+ep /usr/bin/lyrebird
