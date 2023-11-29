@@ -7,7 +7,6 @@ jobs:
     steps:
       - uses: actions/delete-package-versions@v4
         with:
-          owner: 'guest42069'
           package-name: 'arti'
           package-type: 'container'
           min-versions-to-keep: 0
