@@ -2,7 +2,6 @@ FROM ghcr.io/cyberworm-uk/lyrebird:latest AS bin
 
 FROM ghcr.io/cyberworm-uk/torbase:latest
 COPY --from=bin /lyrebird /usr/bin/lyrebird
-RUN apk --no-cache --no-interactive add libcap-utils
-RUN setcap cap_net_bind_service=+ep /usr/bin/lyrebird
+RUN apk --no-cache --no-interactive add libcap-utils && setcap cap_net_bind_service=+ep /usr/bin/lyrebird
 EXPOSE 443
 ENTRYPOINT [ "/usr/bin/tor", "--bridgerelay", "1", "--servertransportplugin", "obfs4 exec /usr/bin/lyrebird", "--extorport", "auto", "--servertransportlistenaddr", "obfs4 0.0.0.0:443" ]
