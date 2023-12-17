@@ -5,13 +5,13 @@ RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/an
 
 FROM --platform=$BUILDPLATFORM docker.io/library/golang:alpine AS build
 ARG TARGETOS TARGETARCH
-ENV GOOS="$TARGETOS" GOARCH="$TARGETARCH" GOFLAGS="-buildvcs=false -trimpath" CGO_ENABLED=0
+ENV GOOS="$TARGETOS" GOARCH="$TARGETARCH" GOFLAGS="-buildvcs=false -trimpath"
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/proxy
 RUN --mount=type=cache,target=/go/pkg go mod download
 RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' .
 
-FROM docker.io/library/alpine:latest
+FROM ghcr.io/cyberworm-uk/base:latest
 RUN apk --no-cache --no-interactive add ca-certificates tzdata
 COPY --from=build /go/src/proxy/proxy /bin/proxy
 USER 1000

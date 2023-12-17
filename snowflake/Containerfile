@@ -5,7 +5,7 @@ RUN git clone --depth=1 --branch=${VERSION} https://gitlab.torproject.org/tpo/an
 
 FROM --platform=$BUILDPLATFORM docker.io/library/golang:alpine AS build
 ARG TARGETOS TARGETARCH
-ENV GOOS="$TARGETOS" GOARCH="$TARGETARCH" GOFLAGS="-buildvcs=false -trimpath" CGO_ENABLED=0
+ENV GOOS="$TARGETOS" GOARCH="$TARGETARCH" GOFLAGS="-buildvcs=false -trimpath"
 COPY --from=source /go/src /go/src
 WORKDIR /go/src/client
 RUN --mount=type=cache,target=/go/pkg go mod download
