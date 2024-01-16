@@ -208,6 +208,8 @@ podman run --detach --network arti --volume arti-config:/arti/.config/arti/arti.
 ## onion service
 This example is `podman` specific, using quadlets.
 
+*N.B.* While this uses internal networking to try to minimise nginx making external connections, DNS resolution is likely still going to work from nginx. As such you should be careful to take appropriate precautions to ensure that your outbound DNS is anonymized or entirely blocked for the containers.
+
 `onion-tor.container`
 ```.service
 [Unit]
