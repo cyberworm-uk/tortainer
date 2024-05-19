@@ -2,7 +2,7 @@ FROM docker.io/library/rust:alpine AS build
 ENV RUSTFLAGS="-C target-feature=-crt-static"
 ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 RUN apk --no-interactive add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
-RUN cargo install arti
+RUN cargo install --locked --features=full arti
 
 FROM ghcr.io/cyberworm-uk/base:latest
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
