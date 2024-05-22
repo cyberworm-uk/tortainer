@@ -1,2 +1,0 @@
-FROM docker.io/library/alpine:latest
-RUN apk --no-interactive --no-cache -U upgrade

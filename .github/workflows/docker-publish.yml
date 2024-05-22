@@ -28,14 +28,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push base
-        uses: docker/build-push-action@v5
-        with:
-          context: base/
-          platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/base:latest
-
       - name: Build and push tor
         uses: docker/build-push-action@v5
         with:
