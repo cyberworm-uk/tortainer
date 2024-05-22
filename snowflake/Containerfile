@@ -12,4 +12,6 @@ RUN --mount=type=cache,target=/go/pkg go mod download
 RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' .
 
 FROM scratch
+LABEL org.opencontainers.image.title="snowflake client (binary)"
+LABEL org.opencontainers.image.description="snowflake client binary only"
 COPY --from=build /go/src/client/client /client

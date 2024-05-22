@@ -1,6 +1,9 @@
 FROM ghcr.io/cyberworm-uk/lyrebird:latest AS bin
 
-FROM ghcr.io/cyberworm-uk/torbase:latest
+FROM docker.io/library/alpine:latest
+LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.title="Obfs4 Proxy"
+LABEL org.opencontainers.image.description="Obfs4 (Lyrebird) Proxy"
 COPY --from=bin /lyrebird /usr/bin/lyrebird
 EXPOSE 9050
 ENTRYPOINT [ "/usr/bin/tor", "--clienttransportplugin", "meek_lite,obfs2,obfs3,obfs4,scramblesuit exec /usr/bin/lyrebird", "--socksport", "0.0.0.0:9050", "--usebridges", "1" ]

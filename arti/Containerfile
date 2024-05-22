@@ -4,10 +4,13 @@ ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 RUN apk --no-interactive add musl-dev pkgconfig openssl-dev sqlite-dev xz-dev
 RUN cargo install --locked --features=full arti
 
-FROM ghcr.io/cyberworm-uk/base:latest
+FROM docker.io/library/alpine:latest
+LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.title="Arti"
+LABEL org.opencontainers.image.description="Rust implementation of Tor"
+RUN apk --no-cache --no-interactive add xz-libs sqlite-libs libgcc && addgroup -S arti && adduser -h /arti -S arti -G arti
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
 COPY arti.toml /arti/arti.toml
-RUN apk --no-cache --no-interactive add xz-libs sqlite-libs libgcc && addgroup -S arti && adduser -h /arti -S arti -G arti
 USER arti:arti
 VOLUME [ "/arti" ]
 ENTRYPOINT [ "/bin/arti", "-c", "/arti/arti.toml", "proxy" ]

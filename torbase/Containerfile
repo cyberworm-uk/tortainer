@@ -1,4 +1,7 @@
-FROM ghcr.io/cyberworm-uk/base:latest
+FROM docker.io/library/alpine:latest
+LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.title="Tor base"
+LABEL org.opencontainers.image.description="Tor base alpine image"
 RUN apk --no-cache --no-interactive add tor
 COPY torrc /etc/tor/torrc-defaults
 VOLUME [ "/var/lib/tor" ]

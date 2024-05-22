@@ -1,3 +1,6 @@
 FROM ghcr.io/cyberworm-uk/torbase:latest
+LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.title="Tor Proxy"
+LABEL org.opencontainers.image.description="Tor Proxy (client)"
 EXPOSE 9050
 ENTRYPOINT [ "/usr/bin/tor", "--socksport", "0.0.0.0:9050" ]

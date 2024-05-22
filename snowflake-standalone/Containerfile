@@ -11,7 +11,10 @@ WORKDIR /go/src/proxy
 RUN --mount=type=cache,target=/go/pkg go mod download
 RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' .
 
-FROM ghcr.io/cyberworm-uk/base:latest
+FROM docker.io/library/alpine:latest
+LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.title="Snowflake Standalone"
+LABEL org.opencontainers.image.description="Snowflake Standalone (Entry Point)"
 RUN apk --no-cache --no-interactive add ca-certificates tzdata
 COPY --from=build /go/src/proxy/proxy /bin/proxy
 USER 1000

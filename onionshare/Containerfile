@@ -1,5 +1,5 @@
 ARG WORKDIR="/app"
-FROM ghcr.io/cyberworm-uk/base:latest AS build
+FROM docker.io/library/alpine:latest AS build
 ARG WORKDIR
 ARG VERSION=main
 ENV PYTHONUNBUFFERED=1
