@@ -58,6 +58,8 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
             ${{ env.DOCKERHUB_USERNAME }}/torproxy:latest
+            ${{ env.REGISTRY }}/${{ github.actor }}/tor-proxy:latest
+            ${{ env.DOCKERHUB_USERNAME }}/tor-proxy:latest
 
       - name: Build and push lyrebird-bin
         uses: docker/build-push-action@v6
