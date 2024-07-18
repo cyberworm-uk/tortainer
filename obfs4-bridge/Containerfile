@@ -1,11 +1,16 @@
 FROM ghcr.io/cyberworm-uk/lyrebird:latest AS bin
 
-FROM ghcr.io/cyberworm-uk/torbase:latest
-LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/torbase"
+FROM ghcr.io/cyberworm-uk/tor-base:latest
+LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/tor-base"
 LABEL org.opencontainers.image.title="Obfs4 Bridge"
 LABEL org.opencontainers.image.description="Obfs4 (Lyrebird) Bridge"
 RUN apk --no-cache --no-interactive add libcap-utils
 EXPOSE 443
 COPY --from=bin /lyrebird /usr/bin/lyrebird
 RUN setcap cap_net_bind_service=+ep /usr/bin/lyrebird
-ENTRYPOINT [ "/usr/bin/tor", "--bridgerelay", "1", "--servertransportplugin", "obfs4 exec /usr/bin/lyrebird", "--extorport", "auto", "--servertransportlistenaddr", "obfs4 0.0.0.0:443" ]
+ENTRYPOINT [ "/usr/bin/tor", \
+    "--bridgerelay", "1", \
+    "--servertransportplugin", "obfs4 exec /usr/bin/lyrebird", \
+    "--extorport", "auto", \
+    "--servertransportlistenaddr", "obfs4 0.0.0.0:443" \
+]

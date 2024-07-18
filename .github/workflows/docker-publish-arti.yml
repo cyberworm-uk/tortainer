@@ -29,7 +29,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push arti
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         env:
           SOURCE_DATE_EPOCH: 0
         with:

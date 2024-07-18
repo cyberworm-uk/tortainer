@@ -1,7 +1,7 @@
 FROM ghcr.io/cyberworm-uk/snowflake:latest AS bin
 
-FROM ghcr.io/cyberworm-uk/torbase:latest
-LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/torbase"
+FROM ghcr.io/cyberworm-uk/tor-base:latest
+LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/tor-base"
 LABEL org.opencontainers.image.title="Snowflake Proxy"
 LABEL org.opencontainers.image.description="Snowflake Proxy"
 COPY --from=bin /client /usr/bin/client

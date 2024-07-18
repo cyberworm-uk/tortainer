@@ -46,6 +46,8 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/torbase:latest
             ${{ env.DOCKERHUB_USERNAME }}/torbase:latest
+            ${{ env.REGISTRY }}/${{ github.actor }}/tor-base:latest
+            ${{ env.DOCKERHUB_USERNAME }}/tor-base:latest
 
       - name: Build and push proxy
         uses: docker/build-push-action@v6
