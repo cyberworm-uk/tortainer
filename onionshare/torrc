@@ -1,3 +1,0 @@
-SocksPort 0
-DataDirectory /var/lib/tor
-AvoidDiskWrites 1

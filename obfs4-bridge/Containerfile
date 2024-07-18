@@ -1,7 +1,7 @@
 FROM ghcr.io/cyberworm-uk/lyrebird:latest AS bin
 
-FROM docker.io/library/alpine:latest
-LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+FROM ghcr.io/cyberworm-uk/torbase:latest
+LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/torbase"
 LABEL org.opencontainers.image.title="Obfs4 Bridge"
 LABEL org.opencontainers.image.description="Obfs4 (Lyrebird) Bridge"
 RUN apk --no-cache --no-interactive add libcap-utils

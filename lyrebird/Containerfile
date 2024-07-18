@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/go/pkg go mod download
 RUN --mount=type=cache,target=/go/pkg --mount=type=cache,target=/root/.cache/go-build go build -ldflags '-w -s -buildid=' -o /lyrebird ./cmd/lyrebird
 
 FROM scratch
-LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
+LABEL org.opencontainers.image.base.name="scratch"
 LABEL org.opencontainers.image.title="Lyrebird (binary)"
 LABEL org.opencontainers.image.description="lyrebird client binary only"
 COPY --from=build /lyrebird /lyrebird

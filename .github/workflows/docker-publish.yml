@@ -7,9 +7,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  DOCKERHUB_USERNAME: cyberwormuk
 
 jobs:
-  ghcr_publish:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -21,73 +22,113 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log-in to registry
+      - name: Log-in to ghcr
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Log-in to docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER }}
+
       - name: Build and push tor
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: torbase/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/torbase:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/torbase:latest
+            ${{ env.DOCKERHUB_USERNAME }}/torbase:latest
 
       - name: Build and push proxy
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: torproxy/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
+            ${{ env.DOCKERHUB_USERNAME }}/torproxy:latest
 
       - name: Build and push lyrebird-bin
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: lyrebird/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird:latest
+            ${{ env.DOCKERHUB_USERNAME }}/lyrebird:latest
 
       - name: Build and push obfs4-proxy
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: obfs4-proxy/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest,${{ env.REGISTRY }}/${{ github.actor }}/lyrebird-proxy:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest
+            ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird-proxy:latest
+            ${{ env.DOCKERHUB_USERNAME }}/obfs4-proxy:latest
+            ${{ env.DOCKERHUB_USERNAME }}/lyrebird-proxy:latest
 
       - name: Build and push obfs4-bridge
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: obfs4-bridge/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
+            ${{ env.DOCKERHUB_USERNAME }}/obfs4-bridge:latest
 
       - name: Build and push snowflake-bin
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: snowflake/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
+            ${{ env.DOCKERHUB_USERNAME }}/snowflake:latest
 
       - name: Build and push snowflake-proxy
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: snowflake-proxy/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
+            ${{ env.DOCKERHUB_USERNAME }}/snowflake-proxy:latest
 
       - name: Build and push snowflake-standalone
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
         with:
           context: snowflake-standalone/
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
+            ${{ env.DOCKERHUB_USERNAME }}/snowflake-standalone:latest
