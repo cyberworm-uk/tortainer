@@ -4,6 +4,7 @@ FROM ghcr.io/cyberworm-uk/tor-base:latest
 LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/tor-base"
 LABEL org.opencontainers.image.title="Obfs4 Bridge"
 LABEL org.opencontainers.image.description="Obfs4 (Lyrebird) Bridge"
+LABEL org.opencontainers.image.source="https://github.com/cyberworm-uk/tortainer.git"
 RUN apk --no-cache --no-interactive add libcap-utils
 EXPOSE 443
 COPY --from=bin /lyrebird /usr/bin/lyrebird

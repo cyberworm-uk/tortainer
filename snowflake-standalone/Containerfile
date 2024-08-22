@@ -15,6 +15,7 @@ FROM docker.io/library/alpine:latest
 LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
 LABEL org.opencontainers.image.title="Snowflake Standalone"
 LABEL org.opencontainers.image.description="Snowflake Standalone (Entry Point)"
+LABEL org.opencontainers.image.source="https://github.com/cyberworm-uk/tortainer.git"
 RUN apk --no-cache --no-interactive add ca-certificates tzdata
 COPY --from=build /go/src/proxy/proxy /bin/proxy
 USER 1000

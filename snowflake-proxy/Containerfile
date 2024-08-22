@@ -4,6 +4,7 @@ FROM ghcr.io/cyberworm-uk/tor-base:latest
 LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/tor-base"
 LABEL org.opencontainers.image.title="Snowflake Proxy"
 LABEL org.opencontainers.image.description="Snowflake Proxy"
+LABEL org.opencontainers.image.source="https://github.com/cyberworm-uk/tortainer.git"
 COPY --from=bin /client /usr/bin/client
 EXPOSE 9050
 ENTRYPOINT [ "/usr/bin/tor", \

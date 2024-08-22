@@ -8,6 +8,7 @@ FROM docker.io/library/alpine:latest
 LABEL org.opencontainers.image.base.name="docker.io/library/alpine"
 LABEL org.opencontainers.image.title="Arti"
 LABEL org.opencontainers.image.description="Rust implementation of Tor"
+LABEL org.opencontainers.image.source="https://github.com/cyberworm-uk/tortainer.git"
 RUN apk --no-cache --no-interactive add xz-libs sqlite-libs libgcc && addgroup -S arti && adduser -h /arti -S arti -G arti
 COPY --from=build /usr/local/cargo/bin/arti /bin/arti
 COPY arti.toml /arti/arti.toml

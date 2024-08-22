@@ -4,6 +4,7 @@ FROM ghcr.io/cyberworm-uk/tor-base:latest
 LABEL org.opencontainers.image.base.name="ghcr.io/cyberworm-uk/tor-base"
 LABEL org.opencontainers.image.title="Obfs4 Proxy"
 LABEL org.opencontainers.image.description="Obfs4 (Lyrebird) Proxy"
+LABEL org.opencontainers.image.source="https://github.com/cyberworm-uk/tortainer.git"
 COPY --from=bin /lyrebird /usr/bin/lyrebird
 EXPOSE 9050
 ENTRYPOINT [ "/usr/bin/tor", \
