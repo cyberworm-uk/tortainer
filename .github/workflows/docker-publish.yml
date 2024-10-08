@@ -37,6 +37,7 @@ jobs:
 
       - name: Build and push tor
         uses: docker/build-push-action@v6
+        id: pushbase
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -49,8 +50,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/tor-base:latest
             ${{ env.DOCKERHUB_USERNAME }}/tor-base:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestbase
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/tor-base
+          subject-digest: ${{ steps.pushbase.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push proxy
         uses: docker/build-push-action@v6
+        id: pushproxy
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -63,8 +73,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/tor-proxy:latest
             ${{ env.DOCKERHUB_USERNAME }}/tor-proxy:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestproxy
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/tor-proxy
+          subject-digest: ${{ steps.pushproxy.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push lyrebird-bin
         uses: docker/build-push-action@v6
+        id: pushlyrebirdbin
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -75,8 +94,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird:latest
             ${{ env.DOCKERHUB_USERNAME }}/lyrebird:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestlyrebirdbin
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird
+          subject-digest: ${{ steps.pushlyrebirdbin.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push obfs4-proxy
         uses: docker/build-push-action@v6
+        id: pushobfs4proxy
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -89,8 +117,17 @@ jobs:
             ${{ env.DOCKERHUB_USERNAME }}/obfs4-proxy:latest
             ${{ env.DOCKERHUB_USERNAME }}/lyrebird-proxy:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestobfs4proxy
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy
+          subject-digest: ${{ steps.pushobfs4proxy.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push obfs4-bridge
         uses: docker/build-push-action@v6
+        id: pushobfs4bridge
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -101,8 +138,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
             ${{ env.DOCKERHUB_USERNAME }}/obfs4-bridge:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestobfs4bridge
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge
+          subject-digest: ${{ steps.pushobfs4bridge.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push snowflake-bin
         uses: docker/build-push-action@v6
+        id: pushsnowflakebin
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -113,8 +159,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
             ${{ env.DOCKERHUB_USERNAME }}/snowflake:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestsnowflakebin
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake
+          subject-digest: ${{ steps.pushsnowflakebin.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push snowflake-proxy
         uses: docker/build-push-action@v6
+        id: pushsnowflakeproxy
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -125,8 +180,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
             ${{ env.DOCKERHUB_USERNAME }}/snowflake-proxy:latest
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestsnowflakeproxy
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy
+          subject-digest: ${{ steps.pushsnowflakeproxy.outputs.digest }}
+          push-to-registry: true
+
       - name: Build and push snowflake-standalone
         uses: docker/build-push-action@v6
+        id: pushsnowflake
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -136,3 +200,11 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
             ${{ env.DOCKERHUB_USERNAME }}/snowflake-standalone:latest
+
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attestsnowflake
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone
+          subject-digest: ${{ steps.pushsnowflake.outputs.digest }}
+          push-to-registry: true
