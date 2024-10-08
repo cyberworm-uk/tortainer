@@ -11,6 +11,11 @@ env:
 
 jobs:
   publish:
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      attestations: write
     runs-on: ubuntu-latest
     steps:
       - name: checkout

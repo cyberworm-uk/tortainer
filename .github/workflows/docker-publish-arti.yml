@@ -9,7 +9,12 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  ghcr_publish:
+  publish:
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      attestations: write
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -30,6 +35,7 @@ jobs:
 
       - name: Build and push arti
         uses: docker/build-push-action@v6
+        id: push
         env:
           SOURCE_DATE_EPOCH: 0
         with:
@@ -37,3 +43,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.actor }}/arti:latest
+
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/arti
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
