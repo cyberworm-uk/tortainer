@@ -1,8 +1,8 @@
 name: Docker Images (Tor)
 
 on:
-  schedule:
-    - cron: '00 00 * * 5'
+#  schedule:
+#    - cron: '00 00 * * 5'
   workflow_dispatch:
 
 env:
