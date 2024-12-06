@@ -51,9 +51,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/torbase:latest
-            ${{ env.DOCKERHUB_USERNAME }}/torbase:latest
             ${{ env.REGISTRY }}/${{ github.actor }}/tor-base:latest
-            ${{ env.DOCKERHUB_USERNAME }}/tor-base:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -74,9 +72,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/torproxy:latest
-            ${{ env.DOCKERHUB_USERNAME }}/torproxy:latest
             ${{ env.REGISTRY }}/${{ github.actor }}/tor-proxy:latest
-            ${{ env.DOCKERHUB_USERNAME }}/tor-proxy:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -97,7 +93,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird:latest
-            ${{ env.DOCKERHUB_USERNAME }}/lyrebird:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -119,8 +114,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-proxy:latest
             ${{ env.REGISTRY }}/${{ github.actor }}/lyrebird-proxy:latest
-            ${{ env.DOCKERHUB_USERNAME }}/obfs4-proxy:latest
-            ${{ env.DOCKERHUB_USERNAME }}/lyrebird-proxy:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -141,7 +134,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/obfs4-bridge:latest
-            ${{ env.DOCKERHUB_USERNAME }}/obfs4-bridge:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -162,7 +154,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake:latest
-            ${{ env.DOCKERHUB_USERNAME }}/snowflake:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -183,7 +174,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-proxy:latest
-            ${{ env.DOCKERHUB_USERNAME }}/snowflake-proxy:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
@@ -204,7 +194,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/snowflake-standalone:latest
-            ${{ env.DOCKERHUB_USERNAME }}/snowflake-standalone:latest
 
       - name: Attest
         uses: actions/attest-build-provenance@v1
